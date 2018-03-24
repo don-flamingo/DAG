@@ -11,7 +11,6 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
 {
     public class InterfaceCodeGenerator : BaseCodeGenerator
     {
-        private readonly string _modelsPath;
         private readonly string _namespace;
         private readonly string _interfacesNamespace;
         private readonly string _markerInterface;
@@ -23,10 +22,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         private readonly IList<Property> _properties;
         private readonly IDictionary<Property, string> _interfacesNameForProperties;
 
-        public InterfaceCodeGenerator(string modelsPath, string namespaceS, string assemblyPath, bool update,
-            int minUnionProperty, string markerInterface, string prefix = "", string postfix = "") : base(assemblyPath)
+        public InterfaceCodeGenerator(string classDirectoryPath, string namespaceS, string assemblyPath, bool update,
+            int minUnionProperty, string markerInterface, string prefix = "", string postfix = "") : base(assemblyPath, classDirectoryPath)
         {
-            _modelsPath = modelsPath;
             _namespace = namespaceS;
             _update = update;
             _minUnionProperty = minUnionProperty;
@@ -87,7 +85,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         private void GenerateInterfaces(IEnumerable<Type> models)
         {
             var propertiesForInterfaces = GetPropertiesForInterfaces();
-            var interfacesDirectory = Path.Combine(_modelsPath, "Interfaces");
+            var interfacesDirectory = Path.Combine(_classDirectoryPath, "Interfaces");
 
             if (!Directory.Exists(interfacesDirectory))
                 Directory.CreateDirectory(interfacesDirectory);
@@ -144,7 +142,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         private void GenerateClassesWithInterfaces(IEnumerable<Type> models)
         {
             var propertiesForInterfaces = GetPropertiesForInterfaces();
-            var extensionDirectory = Path.Combine(_modelsPath, "Extensions");
+            var extensionDirectory = Path.Combine(_classDirectoryPath, "Extensions");
 
             if (!Directory.Exists(extensionDirectory))
                 Directory.CreateDirectory(extensionDirectory);

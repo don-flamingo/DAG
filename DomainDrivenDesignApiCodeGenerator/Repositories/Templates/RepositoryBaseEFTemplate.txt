@@ -42,9 +42,6 @@ namespace ${namespace}
             {
                 var entityOnDb = await context.Set<TEntity>().FindAsync(entity.Id);
 
-                if (entityOnDb == null)
-                    throw new ObjectNotFoundException(typeof(TEntity), entity.Id);
-
                 context.Entry(entityOnDb).CurrentValues.SetValues(entity);
                 await context.SaveChangesAsync();
             }

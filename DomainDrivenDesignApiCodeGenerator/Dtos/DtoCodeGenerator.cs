@@ -9,8 +9,8 @@ namespace DomainDrivenDesignApiCodeGenerator.Dtos
 {
     public class DtoCodeGenerator : BaseDtoCodeGenerator
     {
-        public DtoCodeGenerator(string dtoNamespaceS, string dtosModelsPath, string modelsNamespace,
-            string assemblyPath, bool isUpdate) : base(dtoNamespaceS, dtosModelsPath, modelsNamespace, assemblyPath,
+        public DtoCodeGenerator(string dtoNamespaceS, string classDirectoryPath, string modelsNamespace,
+            string assemblyPath, bool isUpdate) : base(dtoNamespaceS, classDirectoryPath, modelsNamespace, assemblyPath,
             isUpdate)
         {
         }
@@ -37,10 +37,10 @@ namespace DomainDrivenDesignApiCodeGenerator.Dtos
                     .Replace(Consts.Namespace, _dtoNamespace)
                     .Replace(Consts.Body, propertyStringBuilder.ToString());
 
-                if (!Directory.Exists(_dtosModelsPath))
-                    Directory.CreateDirectory(_dtosModelsPath);
+                if (!Directory.Exists(_classDirectoryPath))
+                    Directory.CreateDirectory(_classDirectoryPath);
 
-                var dtoPath = Path.Combine(_dtosModelsPath, $"{dtoName}.g.cs");
+                var dtoPath = Path.Combine(_classDirectoryPath, $"{dtoName}.g.cs");
 
                 if ((File.Exists(dtoPath) && _isUpdate) || !File.Exists(dtoPath))
                 {

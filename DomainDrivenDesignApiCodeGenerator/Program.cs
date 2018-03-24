@@ -21,7 +21,7 @@ namespace DomainDrivenDesignApiCodeGenerator
             var sortFuncPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Framework";
             var sortFuncNamespace = "Gymmer.Server.Core.Framework";
 
-            var repositoryNamespace = "Gymmer.Core.Repositories";
+            var repositoryNamespace = "Gymmer.Server.Core.Repositories";
             var repostioryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Repositories";
             var interfaceRepositoryNamespaces = $"using Gymmer.Server.Core.Framework; {Environment.NewLine}" +
                                                 $"using Gymmer.Server.Core.Models;";

@@ -9,19 +9,17 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
     {
         protected readonly string _modelsNamepace;
         protected readonly string _repositoriesNamespace;
-        protected readonly string _repositoriesPath;
         protected readonly string _namespaces;
         protected readonly string _templatePath;
         protected readonly string _repositoryNameTemplate;
         protected readonly bool _update;
 
         protected BaseRepositoryCodeGenerator(string modelsNamepace, string repositoriesNamespace,
-            string repositoriesPath, bool update, string assemblyPath,
-            string namespaces, string templatePath, string repositoryNameTemplate) : base(assemblyPath)
+            string classDirectoryPath, bool update, string assemblyPath,
+            string namespaces, string templatePath, string repositoryNameTemplate) : base(assemblyPath, classDirectoryPath)
         {
             _modelsNamepace = modelsNamepace;
             _repositoriesNamespace = repositoriesNamespace;
-            _repositoriesPath = repositoriesPath;
             _namespaces = namespaces;
             _update = update;
             _templatePath = templatePath;
@@ -31,23 +29,26 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
 
         public override void Generate()
         {
-            CreateMarkerInterface();
+            CreateBaseMarker();
             var models = GetModelsFromAssembly(_modelsNamepace);
             var template = ReadTemplate(_templatePath);
 
             foreach (var model in models)
             {
                 var name = string.Format(_repositoryNameTemplate, model.Name);
-                var body = template.Replace(Consts.Namespace, _repositoriesNamespace)
-                    .Replace(Consts.Classname, model.Name)
-                    .Replace(Consts.Namespaces, _namespaces)
-                    .Replace(Consts.ModelsNamespace, _modelsNamepace);
+                var body = GetClassBody(template)
+                    .Replace(Consts.Classname, model.Name);
 
-                CreateClass(Path.Combine(_repositoriesPath, name), body, _update);
+                CreateClass(Path.Combine(_classDirectoryPath, name), body, _update);
             }
         }
 
-        protected abstract void CreateMarkerInterface();
+        protected abstract void CreateBaseMarker();
+
+        protected virtual string GetClassBody(string template)
+            => template.Replace(Consts.Namespace, _repositoriesNamespace)
+                .Replace(Consts.Namespaces, _namespaces)
+                .Replace(Consts.ModelsNamespace, _modelsNamepace);
     }
 }
 

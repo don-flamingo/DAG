@@ -9,14 +9,14 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
     {
 
         public InterfaceRepositoryCodeGenerator(string modelsNamepace, string repositoriesNamespace,
-            string repositoriesPath, bool update, string assemblyPath, string namespaces) 
-            : base(modelsNamepace, repositoriesNamespace, repositoriesPath, update,
+            string classDirectoryPath, bool update, string assemblyPath, string namespaces) 
+            : base(modelsNamepace, repositoriesNamespace, classDirectoryPath, update,
                 assemblyPath, namespaces, Path.Combine("Repositories", "Templates", "RepositoryInterfaceTemplate.txt"), "I{0}Repository")
         {
         }
 
-        protected override void CreateMarkerInterface()
-            => new MarkerRepositoryCodeGenerator(_repositoriesPath, _repositoriesNamespace, _update, _assemblyPath)
+        protected override void CreateBaseMarker()
+            => new MarkerRepositoryCodeGenerator(_classDirectoryPath, _repositoriesNamespace, _update, _assemblyPath)
                 .Generate();
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using DomainDrivenDesignApiCodeGenerator.Helpers;
@@ -10,10 +11,15 @@ namespace DomainDrivenDesignApiCodeGenerator
     public abstract class BaseCodeGenerator
     {
         protected readonly string _assemblyPath;
+        protected readonly string _classDirectoryPath;
 
-        public BaseCodeGenerator(string assemblyPath)
+        protected BaseCodeGenerator(string assemblyPath, string classDirectoryPath)
         {
             _assemblyPath = assemblyPath;
+            _classDirectoryPath = classDirectoryPath;
+
+           if(!Directory.Exists(classDirectoryPath))
+                Directory.CreateDirectory(_classDirectoryPath);
         }
 
 
@@ -31,7 +37,16 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             File.WriteAllText(path, body);
             Console.WriteLine($"{path} created");
-        } 
+        }
+
+        /// <summary>
+        /// This method fill template with values from dictionary
+        /// </summary>
+        /// <param name="template">string template (not path!)</param>
+        /// <param name="values">TemplateKey : value</param>
+        protected string CreateBody(string template, IDictionary<string, string> values)
+            => values.Aggregate(template, (current, val) => current.Replace(val.Key, val.Value));
+        
 
         protected IEnumerable<Type> GetModelsFromAssembly(string modelsNamespace)
         {
