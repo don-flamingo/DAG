@@ -15,5 +15,7 @@
         public const string SortFuncNamespace = "${sortFuncNamespace}";
 
         public const string ModelsNamespace = "${modelsNamespace}";
+
+        public const string Namespaces = "${namespaces}";
     }
 }

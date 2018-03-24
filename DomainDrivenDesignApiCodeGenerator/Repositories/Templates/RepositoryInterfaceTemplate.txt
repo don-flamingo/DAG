@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using ${sortFuncNamespace};
-using ${modelsNamespace};
+${namespaces}
 
 namespace ${namespace}
 {
-    public interface I${className}Repository : IRepository
+    public partial interface I${className}Repository : IRepository
     {
         Task CreateAsync(${className} item);
 

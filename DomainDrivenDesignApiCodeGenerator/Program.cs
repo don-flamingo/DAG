@@ -23,21 +23,25 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             var repositoryNamespace = "Gymmer.Core.Repositories";
             var repostioryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Repositories";
+            var interfaceRepositoryNamespaces = $"using Gymmer.Server.Core.Framework; {Environment.NewLine}" +
+                                                $"using Gymmer.Server.Core.Models;";
 
             var dtoCodeGenerator = new DtoCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, true);
             dtoCodeGenerator.Generate();
 
-            var interfaceGenerator = new InterfaceCodeGenerator(modelsPath, modelsNamespace, assembly, true, 3, "IGymmerObject");
+            var interfaceGenerator =
+                new InterfaceCodeGenerator(modelsPath, modelsNamespace, assembly, true, 3, "IGymmerObject");
             interfaceGenerator.Generate();
 
-            var dtoInterfaceGenerator = new InterfaceCodeGenerator(dtoPath, dtoNamespace, dtoAssembly, true, 3, "IDto", "Dto");
+            var dtoInterfaceGenerator =
+                new InterfaceCodeGenerator(dtoPath, dtoNamespace, dtoAssembly, true, 3, "IDto", "Dto");
             dtoInterfaceGenerator.Generate();
 
             var sortFuncGenerator = new SortFuncCodeGenerator(sortFuncPath, sortFuncNamespace, true);
             sortFuncGenerator.Generate();
 
-            var interfaceRepositoryCodeGenerator = new InterfaceRepositoryCodeGenerator(sortFuncNamespace, modelsNamespace,
-                repositoryNamespace, repostioryPath, true, assembly);
+            var interfaceRepositoryCodeGenerator = new InterfaceRepositoryCodeGenerator(modelsNamespace,
+                repositoryNamespace, repostioryPath, true, assembly, interfaceRepositoryNamespaces);
             interfaceRepositoryCodeGenerator.Generate();
 
             Console.WriteLine("End.");

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+${namespaces}
 
 namespace ${namespace}
 {
-    public partial interface IRepository
+    public partial class ${className}Repository : BaseEFRepository, I${className}Repository
     {
     }
 }
-
