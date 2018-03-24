@@ -15,7 +15,7 @@ namespace ${namespace}
 
         Task DeleteAsync(Guid id);
 
-        Task<${className}> GetAsync(Expression<Func<${className}, bool>> predicate, bool throwExceptionWhenNotFound = true);
+        Task<${className}> GetAsync(Expression<Func<${className}, bool>> predicate);
 
         Task<IEnumerable<${className}>> GetAllAsync(Expression<Func<${className}, bool>>predicate = null, SortFunc<${className}>[] navigationProperties = null,
             int? page = 0, int? pageSize = 20);

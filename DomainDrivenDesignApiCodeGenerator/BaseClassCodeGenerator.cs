@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 
 namespace DomainDrivenDesignApiCodeGenerator
@@ -31,9 +32,13 @@ namespace DomainDrivenDesignApiCodeGenerator
         {
             var template = File.ReadAllText(_template);
             var body = CreateBody(template, _templateValues);
-            File.WriteAllText(_filePath, body);
+            var path = _filePath;
 
-            Console.WriteLine($"{_filePath} created");
+            if (!path.EndsWith(".g.cs"))
+                path = $"{path}.g.cs";
+
+            File.WriteAllText($"{path}", body);
+            Console.WriteLine($"{path} created");
         }
     
         public void AddBodyTemplateResolver(string template, string value)

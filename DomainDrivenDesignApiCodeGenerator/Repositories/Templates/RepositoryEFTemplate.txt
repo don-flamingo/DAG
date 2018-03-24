@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Autofac;
 ${namespaces}
 
 namespace ${namespace}
 {
-    public partial class ${className}Repository : BaseEFRepository, I${className}Repository
+    public partial class ${className}Repository : BaseEfRepository<${className}>, I${className}Repository
     {
+		public ${className}Repository (IComponentContext context) : base(context) 
+		{
+		}
     }
 }

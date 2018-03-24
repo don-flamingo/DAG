@@ -26,6 +26,16 @@ namespace DomainDrivenDesignApiCodeGenerator
             var interfaceRepositoryNamespaces = $"using Gymmer.Server.Core.Framework; {Environment.NewLine}" +
                                                 $"using Gymmer.Server.Core.Models;";
 
+            var entityFrameworkRepositoryNamespace = "Gymmer.Server.Infrastructure.Repositories.EF";
+            var efRepositoryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Repositories\EF";
+            var context = "GymmerContext";
+            var entityMarker = "IGymmerObject";
+            var idProvider = "IIdProvider";
+            var efRepoNamespaces = $"using Gymmer.Server.Core.Framework; {Environment.NewLine}" +
+                                   $"using Gymmer.Server.Core.Models; {Environment.NewLine}" +
+                                   $"using Gymmer.Server.Core.Models.Interfaces; {Environment.NewLine}" +
+                                   $"using Gymmer.Server.Core.Repositories; {Environment.NewLine}";
+                                   
             var dtoCodeGenerator = new DtoCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, true);
             dtoCodeGenerator.Generate();
 
@@ -43,6 +53,9 @@ namespace DomainDrivenDesignApiCodeGenerator
             var interfaceRepositoryCodeGenerator = new InterfaceRepositoryCodeGenerator(modelsNamespace,
                 repositoryNamespace, repostioryPath, true, assembly, interfaceRepositoryNamespaces);
             interfaceRepositoryCodeGenerator.Generate();
+
+            var efRepositoryCodeGenerator = new EFRepositoryCodeGenerator(context, entityMarker, idProvider, modelsNamespace, entityFrameworkRepositoryNamespace, efRepositoryPath, true, assembly, efRepoNamespaces);
+            efRepositoryCodeGenerator.Generate();
 
             Console.WriteLine("End.");
 

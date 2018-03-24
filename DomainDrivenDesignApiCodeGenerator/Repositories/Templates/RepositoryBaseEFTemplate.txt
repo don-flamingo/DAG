@@ -11,7 +11,7 @@ ${namespaces}
 
 namespace ${namespace}
 {
-    public abstract class BaseEfRepository<TEntity> where TEntity : class, ${entityMarker}, ${idInterfaceProvider)
+    public abstract partial class BaseEfRepository<TEntity> where TEntity : class, ${entityMarker}, ${idInterfaceProvider)
     {
         protected readonly IComponentContext _context;
         public BaseEfRepository(IComponentContext context)
