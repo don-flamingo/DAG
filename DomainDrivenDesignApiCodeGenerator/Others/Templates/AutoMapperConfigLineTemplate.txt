@@ -1,0 +1,2 @@
+﻿                cfg.CreateMap<${className}, ${className}Dto>()
+                    .ReverseMap();

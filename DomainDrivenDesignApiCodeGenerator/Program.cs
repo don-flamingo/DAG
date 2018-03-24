@@ -35,6 +35,12 @@ namespace DomainDrivenDesignApiCodeGenerator
                                    $"using Gymmer.Server.Core.Models; {Environment.NewLine}" +
                                    $"using Gymmer.Server.Core.Models.Interfaces; {Environment.NewLine}" +
                                    $"using Gymmer.Server.Core.Repositories; {Environment.NewLine}";
+
+            var mapperPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Mappers\AutoMapperConfig";
+            var mapperMamespace = "Gymmer.Server.Infrastructure.Mappers";
+            var mapperNamespaces = $"using {modelsNamespace}; {Environment.NewLine}" +
+                                   $"using {dtoNamespace}; {Environment.NewLine}";
+
                                    
             var dtoCodeGenerator = new DtoCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, true);
             dtoCodeGenerator.Generate();
@@ -56,6 +62,9 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             var efRepositoryCodeGenerator = new EFRepositoryCodeGenerator(context, entityMarker, idProvider, modelsNamespace, entityFrameworkRepositoryNamespace, efRepositoryPath, true, assembly, efRepoNamespaces);
             efRepositoryCodeGenerator.Generate();
+
+            var mapperCodeGenerator = new AutoMapperConfigCodeGenerator(mapperNamespaces,  modelsNamespace,mapperPath, mapperMamespace, true, assembly);
+            mapperCodeGenerator.Generate();
 
             Console.WriteLine("End.");
 
