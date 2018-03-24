@@ -15,6 +15,8 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         private readonly string _namespace;
         private readonly string _assemblyPath;
         private readonly string _interfacesNamespace;
+        private readonly string _markerInterface;
+        private readonly string _prefix;
         private readonly bool _update;
         private readonly int _minUnionProperty;
 
@@ -22,13 +24,16 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         private readonly IDictionary<Property, string> _interfacesNameForProperties;
 
         public InterfaceCodeGenerator(string modelsPath, string namespaceS, string assemblyPath, bool update,
-            int minUnionProperty)
+            int minUnionProperty, string markerInterface, string prefix = "")
         {
             _modelsPath = modelsPath;
             _namespace = namespaceS;
             _assemblyPath = assemblyPath;
             _update = update;
             _minUnionProperty = minUnionProperty;
+            _prefix = prefix;
+            _markerInterface = markerInterface;
+
             _interfacesNamespace = $"{_namespace}.Interfaces";
 
             _properties = new List<Property>();
@@ -88,11 +93,13 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
             if (!Directory.Exists(interfacesDirectory))
                 Directory.CreateDirectory(interfacesDirectory);
 
+            CreateMarkerInteface(interfacesDirectory);
+
             foreach (var property in propertiesForInterfaces)
             {
                 var needTypeForName =
                     propertiesForInterfaces.Any(p => p.Name == property.Name && p.Type != property.Type);
-                var interfaceName = $"I{property.Name}";
+                var interfaceName = $"I{_prefix}{property.Name}";
 
                 if (needTypeForName)
                     interfaceName = $"{interfaceName}{property.Type.Name}";
@@ -106,7 +113,23 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
                     return;
 
                 File.WriteAllText(interfacePath, interfaceBody);
+                Console.WriteLine($"{interfaceName} created");
             }
+        }
+
+        private void CreateMarkerInteface(string interfacesDirectory)
+        {
+            var interfaceTemplate = File.ReadAllText(@"Interfaces\InterfaceTemplate.txt");
+            var interfacePath = Path.Combine(interfacesDirectory, $"{_markerInterface}.g.cs");
+            var body = interfaceTemplate.Replace(Consts.CLASSNAME, _markerInterface)
+                .Replace(Consts.NAMESPACE, _interfacesNamespace)
+                .Replace(Consts.BODY, "");
+
+            if (File.Exists(interfacePath) && !_update)
+                return;
+
+            File.WriteAllText(interfacePath, body);
+            Console.WriteLine($"{_markerInterface} created");
         }
 
         private string GetInterfaceBody(string interfaceName, Property property)
@@ -140,6 +163,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
                     continue;
 
                 File.WriteAllText(path, modelExtensionBody);
+                Console.WriteLine($"{model.Name} extension created");
             }
         }
 
@@ -155,6 +179,8 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
                     modelProperty.PropertyType == property.Type &&
                     modelProperty.Name == property.Name))
                     .ToList();
+
+            interfacesStringBuilder.Append($"{_markerInterface}, ");
 
             propertiesForGenerateClass.ForEach(pi => interfacesStringBuilder.Append($"{_interfacesNameForProperties[pi]}, "));
             interfacesStringBuilder = interfacesStringBuilder.Remove(interfacesStringBuilder.Length - 2, 2); // remove last ', '
