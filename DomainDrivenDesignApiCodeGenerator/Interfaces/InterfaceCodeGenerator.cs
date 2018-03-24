@@ -9,11 +9,10 @@ using DomainDrivenDesignApiCodeGenerator.Helpers;
 
 namespace DomainDrivenDesignApiCodeGenerator.Interfaces
 {
-    public class InterfaceCodeGenerator
+    public class InterfaceCodeGenerator : BaseCodeGenerator
     {
         private readonly string _modelsPath;
         private readonly string _namespace;
-        private readonly string _assemblyPath;
         private readonly string _interfacesNamespace;
         private readonly string _markerInterface;
         private readonly string _prefix;
@@ -24,11 +23,10 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         private readonly IDictionary<Property, string> _interfacesNameForProperties;
 
         public InterfaceCodeGenerator(string modelsPath, string namespaceS, string assemblyPath, bool update,
-            int minUnionProperty, string markerInterface, string prefix = "")
+            int minUnionProperty, string markerInterface, string prefix = "") : base(assemblyPath)
         {
             _modelsPath = modelsPath;
             _namespace = namespaceS;
-            _assemblyPath = assemblyPath;
             _update = update;
             _minUnionProperty = minUnionProperty;
             _prefix = prefix;
@@ -40,11 +38,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
             _interfacesNameForProperties = new Dictionary<Property, string>();
         }
 
-        public void Generate()
+        public override void Generate()
         {
-            var assembly = Assembly.LoadFrom(_assemblyPath);
-            var models = assembly.GetClassFromAssemblyNamespace(_namespace)
-                .ToList();
+            var models = GetModelsFromAssembly(_namespace).ToList();
 
             FillPropertiesList(models);
             GenerateInterfaces(models);

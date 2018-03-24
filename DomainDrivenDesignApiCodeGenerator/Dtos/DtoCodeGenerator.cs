@@ -19,8 +19,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Dtos
         {
             var propertyTemplate = File.ReadAllText(@"Dtos\DtoPropertyTemplate.txt");
             var dtoTemplate = File.ReadAllText(@"Dtos\DtoTemplate.txt");
-            var assembly = Assembly.LoadFrom(_assemblyPath);
-            System.Collections.Generic.IEnumerable<Type> models = assembly.GetClassFromAssemblyNamespace(_modelsNamespace);
+            System.Collections.Generic.IEnumerable<Type> models = GetModelsFromAssembly(_modelsNamespace);
 
             foreach (var model in models)
             {
