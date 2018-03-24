@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using DomainDrivenDesignApiCodeGenerator.Helpers;
 
 namespace DomainDrivenDesignApiCodeGenerator.Dtos
 {
@@ -18,9 +19,8 @@ namespace DomainDrivenDesignApiCodeGenerator.Dtos
         {
             var propertyTemplate = File.ReadAllText(@"Dtos\DtoPropertyTemplate.txt");
             var dtoTemplate = File.ReadAllText(@"Dtos\DtoTemplate.txt");
-            var assembly = Assembly.LoadFile(_assemblyPath);
-            var models = assembly.GetExportedTypes()
-                .Where(x => x.Namespace == _modelsNamespace);
+            var assembly = Assembly.LoadFrom(_assemblyPath);
+            System.Collections.Generic.IEnumerable<Type> models = assembly.GetClassFromAssemblyNamespace(_modelsNamespace);
 
             foreach (var model in models)
             {
@@ -28,7 +28,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Dtos
                 var dtoName = $"{model.Name}Dto";
                 foreach (var property in model.GetProperties())
                 {
-                    var propertyType = GetPropertyType(property);
+                    var propertyType = property.GetPropertyTypeNameForDto(_modelsNamespace);
                     var propertyField = $"public {propertyType} {property.Name} {{ get; set; }}";
                     propertyField = propertyTemplate.Replace(Consts.PROPERTY, propertyField);
                     propertyStringBuilder.AppendLine(propertyField);
@@ -51,26 +51,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Dtos
             }
         }
 
-        private string GetPropertyType(PropertyInfo property)
-        {
-            var propertyType = property.PropertyType.Name;
 
-            if (property.PropertyType.IsGenericType)
-                propertyType =
-                    $"{propertyType}<{ChangePropertyNameToDtoIfIsModel(property.PropertyType.GetGenericArguments()[0])}>";
-            else 
-                propertyType = ChangePropertyNameToDtoIfIsModel(property.PropertyType);
-
-            return propertyType.Replace("`1", "");
-        }
-
-        private string ChangePropertyNameToDtoIfIsModel(Type propertyType)
-        {
-            if (propertyType.Namespace == _modelsNamespace)
-                return $"{propertyType.Name}Dto";
-
-            return propertyType.Name;
-        }
     }
 
 
