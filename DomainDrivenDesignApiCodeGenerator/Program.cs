@@ -30,7 +30,7 @@ namespace DomainDrivenDesignApiCodeGenerator
             dtoCodeGenerator.Generate();
 
             var interfaceGenerator =
-                new InterfaceCodeGenerator(modelsPath, modelsNamespace, assembly, true, 3, "IGymmerObject");
+                new InterfaceCodeGenerator(modelsPath, modelsNamespace, assembly, true, 3, "IGymmerObject", postfix: "Provider");
             interfaceGenerator.Generate();
 
             var dtoInterfaceGenerator =

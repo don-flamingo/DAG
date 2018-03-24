@@ -1,10 +1,106 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
+using Autofac;
+using Microsoft.EntityFrameworkCore;
+${namespaces}
 
-namespace DomainDrivenDesignApiCodeGenerator.Repositories.Templates
+namespace ${namespace}
 {
-    class RepositoryBaseEFTemplate
+    public abstract class BaseEfRepository<TEntity> where TEntity : class, ${entityMarker}, ${idInterfaceProvider)
     {
+        protected readonly IComponentContext _context;
+        public BaseEfRepository(IComponentContext context)
+        {
+            _context = context;
+        }
+
+        public virtual async Task CreateAsync(TEntity entity)
+        {
+            using (var dbContext = _context.Resolve<${EFContext}>())
+            {
+                SetDefaultValues(entity);
+
+                await dbContext.AddAsync(entity);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        private static void SetDefaultValues(TEntity entity)
+        {
+            if (typeof(TEntity).IsAssignableFrom(typeof(ICreatedProvider)))
+                ((ICreatedProvider)entity).Created = DateTime.UtcNow;
+        }
+
+        public virtual async Task UpdateAsync(TEntity entity)
+        {
+            using (var context = _context.Resolve<${EFContext}>())
+            {
+                var entityOnDb = await context.Set<TEntity>().FindAsync(entity.Id);
+
+                if (entityOnDb == null)
+                    throw new ObjectNotFoundException(typeof(TEntity), entity.Id);
+
+                context.Entry(entityOnDb).CurrentValues.SetValues(entity);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public virtual async Task DeleteAsync(Guid id)
+        {
+            using (var context = _context.Resolve<${EFContext}>())
+            {
+                var set = context.Set<TEntity>();
+                var entityOnDb = set.SingleOrDefault(x => x.Id == id);
+
+                set.Remove(entityOnDb);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            TEntity item = null;
+
+            using (var context = _context.Resolve<${EFContext}>())
+            {
+                IQueryable<TEntity> dbQuery = context.Set<TEntity>();
+
+                item = await dbQuery
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(predicate);
+
+            }
+            return item;
+        }
+
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null,
+            SortFunc<TEntity>[] navigationProperties = null, int? page = 0, int? pageSize = 20)
+        {
+
+            using (var context = _context.Resolve<${EFContext}>())
+            {
+                IQueryable<TEntity> dbQuery = context.Set<TEntity>();
+
+                if (navigationProperties != null)
+                    dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => navigationProperty.IsDesc
+                        ? current.OrderByDescending(navigationProperty.OrderByFunction).AsQueryable()
+                        : current.OrderBy(navigationProperty.OrderByFunction).AsQueryable());
+
+                if(predicate != null)
+                    dbQuery = dbQuery
+                        .Where(predicate);
+
+                return await dbQuery
+                    .ToAsyncEnumerable()
+                    .Skip(page.Value * pageSize.Value)
+                    .Take(pageSize.Value)
+                    .ToList<TEntity>();
+            }
+        }
     }
 }

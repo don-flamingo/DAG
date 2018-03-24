@@ -16,6 +16,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         private readonly string _interfacesNamespace;
         private readonly string _markerInterface;
         private readonly string _prefix;
+        private readonly string _postfix;
         private readonly bool _update;
         private readonly int _minUnionProperty;
 
@@ -23,13 +24,15 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         private readonly IDictionary<Property, string> _interfacesNameForProperties;
 
         public InterfaceCodeGenerator(string modelsPath, string namespaceS, string assemblyPath, bool update,
-            int minUnionProperty, string markerInterface, string prefix = "") : base(assemblyPath)
+            int minUnionProperty, string markerInterface, string prefix = "", string postfix = "") : base(assemblyPath)
         {
             _modelsPath = modelsPath;
             _namespace = namespaceS;
             _update = update;
             _minUnionProperty = minUnionProperty;
             _prefix = prefix;
+            _postfix = postfix;
+
             _markerInterface = markerInterface;
 
             _interfacesNamespace = $"{_namespace}.Interfaces";
@@ -95,7 +98,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
             {
                 var needTypeForName =
                     propertiesForInterfaces.Any(p => p.Name == property.Name && p.Type != property.Type);
-                var interfaceName = $"I{_prefix}{property.Name}";
+                var interfaceName = $"I{_prefix}{property.Name}{_postfix}";
 
                 if (needTypeForName)
                     interfaceName = $"{interfaceName}{property.Type.Name}";
