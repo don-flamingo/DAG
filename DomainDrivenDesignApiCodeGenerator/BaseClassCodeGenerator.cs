@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
-namespace DomainDrivenDesignApiCodeGenerator.Others
+namespace DomainDrivenDesignApiCodeGenerator
 {
     public abstract class BaseClassCodeGenerator : BaseCodeGenerator
     {
@@ -23,7 +21,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Others
         public override void Generate()
         {
 
-            var template = File.ReadAllText(Path.Combine("Others", _template));
+            var template = File.ReadAllText(_template);
             var body = template.Replace(Consts.Namespace, _namespace);
             File.WriteAllText(_classPath, body);
 

@@ -10,14 +10,12 @@ namespace DomainDrivenDesignApiCodeGenerator.Dtos
         protected readonly string _dtoNamespace;
         protected readonly string _dtosModelsPath;
         protected readonly string _modelsNamespace;
-        protected readonly string _assemblyPath;
         protected readonly bool _isUpdate;
         protected BaseDtoCodeGenerator(string dtoNamespaceS, string dtosModelsPath, string modelsNamespace, string assemblyPath, bool isUpdate) : base(assemblyPath)
         {
             _dtoNamespace = dtoNamespaceS;
             _dtosModelsPath = dtosModelsPath;
             _modelsNamespace = modelsNamespace;
-            _assemblyPath = assemblyPath;
             _isUpdate = isUpdate;
         }
 

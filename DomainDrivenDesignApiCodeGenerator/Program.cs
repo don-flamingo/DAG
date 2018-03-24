@@ -2,6 +2,7 @@
 using DomainDrivenDesignApiCodeGenerator.Dtos;
 using DomainDrivenDesignApiCodeGenerator.Interfaces;
 using DomainDrivenDesignApiCodeGenerator.Others;
+using DomainDrivenDesignApiCodeGenerator.Repositories;
 
 namespace DomainDrivenDesignApiCodeGenerator
 {
@@ -20,6 +21,9 @@ namespace DomainDrivenDesignApiCodeGenerator
             var sortFuncPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Framework";
             var sortFuncNamespace = "Gymmer.Server.Core.Framework";
 
+            var repositoryNamespace = "Gymmer.Core.Repositories";
+            var repostioryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Repositories";
+
             var dtoCodeGenerator = new DtoCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, true);
             dtoCodeGenerator.Generate();
 
@@ -31,6 +35,10 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             var sortFuncGenerator = new SortFuncCodeGenerator(sortFuncPath, sortFuncNamespace, true);
             sortFuncGenerator.Generate();
+
+            var interfaceRepositoryCodeGenerator = new InterfaceRepositoryCodeGenerator(sortFuncNamespace, modelsNamespace,
+                repositoryNamespace, repostioryPath, true, assembly);
+            interfaceRepositoryCodeGenerator.Generate();
 
             Console.WriteLine("End.");
 

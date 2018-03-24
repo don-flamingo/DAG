@@ -14,6 +14,6 @@
 
         public const string SortFuncNamespace = "${sortFuncNamespace}";
 
-
+        public const string ModelsNamespace = "${modelsNamespace}";
     }
 }
