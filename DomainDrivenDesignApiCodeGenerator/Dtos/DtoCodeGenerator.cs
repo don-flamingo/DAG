@@ -29,13 +29,13 @@ namespace DomainDrivenDesignApiCodeGenerator.Dtos
                 {
                     var propertyType = property.GetPropertyTypeNameForDto(_modelsNamespace);
                     var propertyField = $"public {propertyType} {property.Name} {{ get; set; }}";
-                    propertyField = propertyTemplate.Replace(Consts.PROPERTY, propertyField);
+                    propertyField = propertyTemplate.Replace(Consts.Property, propertyField);
                     propertyStringBuilder.AppendLine(propertyField);
                 }
 
-                var dto = dtoTemplate.Replace(Consts.CLASSNAME, dtoName)
-                    .Replace(Consts.NAMESPACE, _dtoNamespace)
-                    .Replace(Consts.BODY, propertyStringBuilder.ToString());
+                var dto = dtoTemplate.Replace(Consts.Classname, dtoName)
+                    .Replace(Consts.Namespace, _dtoNamespace)
+                    .Replace(Consts.Body, propertyStringBuilder.ToString());
 
                 if (!Directory.Exists(_dtosModelsPath))
                     Directory.CreateDirectory(_dtosModelsPath);

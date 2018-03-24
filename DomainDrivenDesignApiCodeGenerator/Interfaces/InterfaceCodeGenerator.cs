@@ -117,9 +117,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         {
             var interfaceTemplate = File.ReadAllText(@"Interfaces\InterfaceTemplate.txt");
             var interfacePath = Path.Combine(interfacesDirectory, $"{_markerInterface}.g.cs");
-            var body = interfaceTemplate.Replace(Consts.CLASSNAME, _markerInterface)
-                .Replace(Consts.NAMESPACE, _interfacesNamespace)
-                .Replace(Consts.BODY, "");
+            var body = interfaceTemplate.Replace(Consts.Classname, _markerInterface)
+                .Replace(Consts.Namespace, _interfacesNamespace)
+                .Replace(Consts.Body, "");
 
             if (File.Exists(interfacePath) && !_update)
                 return;
@@ -133,9 +133,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
             var propertyCode = $"{property.GetPropertyTypeName()} {property.Name} {{ get; set; }}";
             var interfaceTemplate = File.ReadAllText(@"Interfaces\InterfaceTemplate.txt");
 
-            return interfaceTemplate.Replace(Consts.CLASSNAME, interfaceName)
-                .Replace(Consts.NAMESPACE, _interfacesNamespace)
-                .Replace(Consts.BODY, propertyCode);
+            return interfaceTemplate.Replace(Consts.Classname, interfaceName)
+                .Replace(Consts.Namespace, _interfacesNamespace)
+                .Replace(Consts.Body, propertyCode);
         }
 
         private void GenerateClassesWithInterfaces(IEnumerable<Type> models)
@@ -151,9 +151,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
                 var interfacesStringBuilder = GetInterfaces(propertiesForInterfaces, model);
                 var path = Path.Combine(extensionDirectory, $"{model.Name}.g.cs");
                 var modelExtensionBody = File.ReadAllText(@"Interfaces\ModelExtensionTemplate.txt")
-                    .Replace(Consts.CLASSNAME, model.Name)
-                    .Replace(Consts.NAMESPACE, _namespace)
-                    .Replace(Consts.INTERFACES, interfacesStringBuilder.ToString());
+                    .Replace(Consts.Classname, model.Name)
+                    .Replace(Consts.Namespace, _namespace)
+                    .Replace(Consts.Interfaces, interfacesStringBuilder.ToString());
 
                 if (File.Exists(path) && !_update)
                     continue;

@@ -6,11 +6,11 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
 {
     public abstract class BaseRepositoryCodeGenerator : BaseCodeGenerator
     {
-        private readonly string _modelsNamepace;
-        private readonly string _repositoriesNamespace;
-        private readonly string _repositoriesPath;
-        private readonly string _repositoriesInterfacesPath;
-        private readonly bool _update;
+        protected readonly string _modelsNamepace;
+        protected readonly string _repositoriesNamespace;
+        protected readonly string _repositoriesPath;
+        protected readonly string _repositoriesInterfacesPath;
+        protected readonly bool _update;
 
         protected BaseRepositoryCodeGenerator(string modelsNamepace, string repositoriesNamespace, string repositoriesPath, string repositoriesInterfacesPath, bool update, string assemblyPath) : base(assemblyPath)
         {

@@ -1,0 +1,12 @@
+﻿using System;
+
+namespace ${namespace}
+{
+    public partial class SortFunc<T>
+    {
+        public Func<T, object> OrderByFunction { get; set; }
+
+        public bool IsDesc { get; set; }
+
+    }
+}
