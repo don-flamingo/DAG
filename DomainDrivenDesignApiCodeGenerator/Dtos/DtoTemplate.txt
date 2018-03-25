@@ -13,6 +13,6 @@ namespace ${namespace}
     [Serializable]
     public partial class ${className}
     {
-    ${body}
+${body}
     }
 }

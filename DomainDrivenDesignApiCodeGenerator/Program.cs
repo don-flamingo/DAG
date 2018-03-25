@@ -42,7 +42,7 @@ namespace DomainDrivenDesignApiCodeGenerator
                                    $"using {dtoNamespace}; {Environment.NewLine}";
 
                                    
-            var dtoCodeGenerator = new DtoCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, true);
+            var dtoCodeGenerator = new DtoCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, false);
             dtoCodeGenerator.Generate();
 
             var interfaceGenerator =
