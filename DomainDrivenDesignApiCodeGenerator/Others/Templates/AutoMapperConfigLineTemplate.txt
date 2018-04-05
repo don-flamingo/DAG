@@ -1,2 +1,2 @@
 ﻿                cfg.CreateMap<${className}, ${className}Dto>()
-                    .ReverseMap();
+                    .ReverseMap().PreserveReferences();
