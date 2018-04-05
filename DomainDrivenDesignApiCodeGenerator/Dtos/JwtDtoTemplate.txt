@@ -5,7 +5,7 @@ ${namespaces}
 
 namespace ${namespace}
 {
-    public class JwtDto : IDto
+    public partial class JwtDto : IDto
     {
         public string Token { get; set; }
         public long Expires { get; set; }

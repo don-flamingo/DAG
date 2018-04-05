@@ -36,8 +36,11 @@
     <None Update="Repositories\Templates\RepositoryEFTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Services\Templates\ServicesInterfacesCodeGenerator.txt">
+    <None Update="Services\Templates\DomainServicesInterfacesTemplate.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Services\Templates\IDomainServiceTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Settings\Templates\GeneralSettingsTemplate.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

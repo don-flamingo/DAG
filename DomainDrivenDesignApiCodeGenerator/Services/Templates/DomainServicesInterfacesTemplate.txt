@@ -6,7 +6,7 @@ ${namespaces}
 
 namespace ${namespace}
 {
-    public interface I${className}Service
+    public interface I${className}Service : IDomainService
     {
         Task CreateAsync(${createMethodParams});
 

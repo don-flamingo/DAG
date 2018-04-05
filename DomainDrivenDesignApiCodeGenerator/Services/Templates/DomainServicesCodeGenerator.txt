@@ -9,14 +9,10 @@ namespace ${namespace}
     {
 		private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-		private readonly IMapper _mapper;
-		private readonly IMemoryCache _cache;
 		private readonly I${className}Repository _repository;
 
-		public ${className}Service (I${className}Repository repository, IMapper mapper, IMemoryCache cache)
+		public ${className}Service (I${className}Repository repository, IMapper mapper, IMemoryCache cache) : base(mapper, cache)
         {
-			_mapper = mapper;
-			_cache = cache;
 			_repository = repository;
         }
 
@@ -69,7 +65,7 @@ namespace ${namespace}
 
 		public async Task<IEnumerable<${className}Dto>> GetListAsync(IPageQuery query)
 		{
-			(var predicate, var navigationProperties) = CreateNavigationFunctions(query);
+			(var predicate, var navigationProperties) = NavigationFunctionHelper.CreateGeneric<${className}>(query);
             var items = await _repository.GetAllAsync(predicate, navigationProperties, query.Page, query.PageSize);
 			return _mapper.Map<IEnumerable<${className}Dto>>(items);
 		}
