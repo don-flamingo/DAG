@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ${namespace}
+{
+    public partial class GeneralSettings
+    {
+        public static string Name { get; set; }
+
+        public static string ConnectionString { get; set; }
+
+        public static bool SeedData { get; set; }
+
+        public static string Address { get; set; }
+
+        public static int ExpiryCacheInSec { get; set; } = 5;
+    }
+}

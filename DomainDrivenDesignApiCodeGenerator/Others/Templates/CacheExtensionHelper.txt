@@ -1,0 +1,48 @@
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+${namespaces}
+
+namespace ${namespace}
+{
+    public static class CacheExtensions
+    {
+        private static readonly TimeSpan ExpiryCache = TimeSpan.FromSeconds(GeneralSettings.ExpiryCacheInSec);
+
+        public static void SetJwt(this IMemoryCache cache, Guid tokenGuid, JwtDto jwt)
+            => cache.Set(GetJwtKey(tokenGuid), jwt, ExpiryCache);
+
+        public static JwtDto GetJwt(this IMemoryCache cache, Guid tokenGuid)
+            => cache.Get<JwtDto>(GetJwtKey(tokenGuid));
+
+        private static string GetJwtKey(Guid tokenGuid)
+            => $"jwt-{tokenGuid}";
+
+
+        public static void SetDto<TDto>(this IMemoryCache cache, TDto dto) where TDto : IDto, IDtoIdProvider
+            => cache.Set(GetDtoKey<TDto>(dto.Id), dto, ExpiryCache);
+
+        public static TDto GetDto<TDto>(this IMemoryCache cache, Guid id) where TDto : IDto, IDtoIdProvider
+            => cache.Get<TDto>(GetDtoKey<TDto>(id));
+
+        private static string GetDtoKey<TDto>(Guid id) where TDto : IDto, IDtoIdProvider
+            => $"dto-{RefactorDtoTypeName(typeof(TDto))}-{id}";
+
+
+        public static void SetPatchResult<TDto>(this IMemoryCache cache, Guid id, PatchResult<TDto> result) where TDto : IDto
+            => cache.Set(GetPatchResultKey<TDto>(id), result, ExpiryCache);
+
+        public static PatchResult<TDto> GetPatchResult<TDto>(this IMemoryCache cache, Guid id) where TDto : IDto
+            => cache.Get<PatchResult<TDto>>(GetPatchResultKey<TDto>(id));
+
+        private static string GetPatchResultKey<TDto>(Guid id)
+            => $"patch-{RefactorDtoTypeName(typeof(TDto))}-{id}";
+
+
+        private static string RefactorDtoTypeName(MemberInfo dtoType)
+            => dtoType.Name.Remove(dtoType.Name.Length - 3, 3).ToLower();
+
+    }
+}

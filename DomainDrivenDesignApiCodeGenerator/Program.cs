@@ -8,6 +8,7 @@ using DomainDrivenDesignApiCodeGenerator.Interfaces;
 using DomainDrivenDesignApiCodeGenerator.Others;
 using DomainDrivenDesignApiCodeGenerator.Repositories;
 using DomainDrivenDesignApiCodeGenerator.Services;
+using DomainDrivenDesignApiCodeGenerator.Settings;
 
 namespace DomainDrivenDesignApiCodeGenerator
 {
@@ -26,8 +27,10 @@ namespace DomainDrivenDesignApiCodeGenerator
             var infrastrucutreNamespace = $"{projectName}.Server.Infrastructure";
             var infrastracturePath = Path.Combine(mainCodePath, $"{projectName}.Server",
                 infrastrucutreNamespace);
-            
-            
+            var infrastrucutreExtensionsNamespace = $"{infrastrucutreNamespace}.Extensions";
+            var infrastractureExtensionsPath = Path.Combine(infrastracturePath, "Extensions");
+            var infrastrucutreSettingsNamespace = $"{infrastrucutreNamespace}.Settings";
+            var infrastrucutreSettingsPath = Path.Combine(infrastracturePath, "Settings");
 
             var dtoNamespace = "Gymmer.Common.Dtos";
             var modelsNamespace = "Gymmer.Server.Core.Models";
@@ -85,7 +88,7 @@ namespace DomainDrivenDesignApiCodeGenerator
             interfaceGenerator.Generate();
 
             var dtoInterfaceGenerator =
-                new InterfacesCodeGenerator(dtoPath, dtoNamespace, dtoAssembly, true, 3, "IDto", "Dto");
+                new InterfacesCodeGenerator(dtoPath, dtoNamespace, dtoAssembly, true, 3, "IDto", "Dto", postfix: "Provider");
             dtoInterfaceGenerator.Generate();
 
             var sortFuncGenerator = new SortFuncCodeGenerator(sortFuncPath, sortFuncNamespace, true);
@@ -133,9 +136,27 @@ namespace DomainDrivenDesignApiCodeGenerator
                 new PredicateHelperCodeGenerator(infrastrucutreHelpersPath, infrastructureHelpersNamespace, true);
             predicateHelperCodeGenerator.Generate();
 
+            var generalSettingsCodesGenerator =
+                new GeneralSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true);
+            generalSettingsCodesGenerator.Generate();
+
             var stringExtensionCodeGenerator =
                 new StringExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true);
             stringExtensionCodeGenerator.Generate();
+
+            var cacheExtenionsNamespace = $"using {dtoNamespace};{Environment.NewLine}" +
+                                          $"using {dtoNamespace}.Interfaces;{Environment.NewLine}" +
+                                          $"using {commonWwrappersNamespace};{Environment.NewLine}" +
+                                          $"using {infrastrucutreSettingsNamespace};";
+
+            var cacheExtensionsCodeGenerator = 
+                new CacheExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, cacheExtenionsNamespace, true);
+            cacheExtensionsCodeGenerator.Generate();
+
+            var jwtDtoNamespaces = $"using {dtoNamespace}.Interfaces;";
+            var jwtDtoCodeGenerator = 
+                new JwtDtoCodeGenerator(dtoPath, dtoNamespace, jwtDtoNamespaces, true );
+            jwtDtoCodeGenerator.Generate();
 
             Console.WriteLine("End.");
 
