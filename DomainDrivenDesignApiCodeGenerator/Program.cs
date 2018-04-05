@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using DomainDrivenDesignApiCodeGenerator.Dtos;
 using DomainDrivenDesignApiCodeGenerator.Interfaces;
@@ -13,6 +14,12 @@ namespace DomainDrivenDesignApiCodeGenerator
     {
         static void Main(string[] args)
         {
+            var mainCodePath = @"D:\Codes\My\Gymmer\src";
+
+            var frameworkNamespace = "Gymmer.Framework";
+            var frameworkCodePath = Path.Combine(mainCodePath, frameworkNamespace);
+            
+
             var dtoNamespace = "Gymmer.Framework.Dtos";
             var modelsNamespace = "Gymmer.Server.Core.Models";
             var dtoPath = @"D:\Codes\My\Gymmer\src\Gymmer.Framework\Dtos";
@@ -94,6 +101,14 @@ namespace DomainDrivenDesignApiCodeGenerator
             var serviceCodeGenerator = new InterfacesServicesCodeGenerator(dtoAssembly, assembly, iServiceNamespaces,
                 modelsNamespace, iServiceNamespace, iServicePath, dtoNamespace, ignoredServiceNamespaces, true);
             serviceCodeGenerator.Generate();
+
+            var libraryWrappers = Path.Combine(frameworkCodePath, "Wrappers");
+            var wrappersNamespace = $"{frameworkNamespace}.Wrappers";
+
+            var pathNamesapces = $"using {dtoNamespace}.Interfaces;";
+
+            var patchResultCodeGenerator = new PatchResultCodeGenerator(libraryWrappers, wrappersNamespace, true, pathNamesapces);
+            patchResultCodeGenerator.Generate();
 
             Console.WriteLine("End.");
 
