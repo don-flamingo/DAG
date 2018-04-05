@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace ${namespace}
 {
@@ -8,5 +11,48 @@ namespace ${namespace}
 
         public bool IsDesc { get; set; }
 
+		// Code from: https://www.red-gate.com/simple-talk/dotnet/net-framework/dynamic-linq-queries-with-expression-trees/
+        // Fixes from: https://stackoverflow.com/questions/31955025/generate-ef-orderby-expression-by-string
+        /// <summary>
+        /// Create sort predicate from string
+        /// </summary>
+        /// <typeparam name="T">Order by entity, ex. Person</typeparam>
+        /// <param name="orderBy">Sorting params ex. Name, Created_desc</param>
+        /// <returns></returns>
+        public static SortFunc<T>[] CreateFromString<T>(string orderBy)
+        {
+            var propertiesNames = orderBy.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            var navigation = new List<SortFunc<T>>();
+            var type = typeof(T);
+
+            foreach (var propertyName in propertiesNames)
+            {
+                var cleanPropertyName = propertyName;
+                var isDesc = propertyName.Contains("_desc");
+
+                if (isDesc)
+                    cleanPropertyName = propertyName.Replace("_desc", "");
+
+                cleanPropertyName = cleanPropertyName.Trim();
+                var parameter = Expression.Parameter(type);
+                Expression propertyReference = Expression.Property(parameter,
+                    cleanPropertyName);
+
+                if (propertyReference.Type.IsValueType)
+                    propertyReference = Expression.Convert(propertyReference, typeof(object));
+
+                navigation.Add(new SortFunc<T>
+                {
+                    OrderByFunction = Expression.Lambda<Func<T, object>>
+                        (propertyReference, parameter).Compile(),
+                    IsDesc = isDesc
+                });
+            }
+
+
+            return navigation.AsEnumerable()
+                .Reverse()
+                .ToArray();
+        }
     }
 }

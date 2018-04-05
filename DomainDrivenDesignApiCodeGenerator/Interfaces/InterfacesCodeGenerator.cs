@@ -9,7 +9,7 @@ using DomainDrivenDesignApiCodeGenerator.Helpers;
 
 namespace DomainDrivenDesignApiCodeGenerator.Interfaces
 {
-    public class InterfaceCodeGenerator : BaseCodeGenerator
+    public class InterfacesCodeGenerator : BaseCodeGenerator
     {
         private readonly string _namespace;
         private readonly string _interfacesNamespace;
@@ -22,7 +22,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         private readonly IList<Property> _properties;
         private readonly IDictionary<Property, string> _interfacesNameForProperties;
 
-        public InterfaceCodeGenerator(string classDirectoryPath, string namespaceS, string assemblyPath, bool update,
+        public InterfacesCodeGenerator(string classDirectoryPath, string namespaceS, string assemblyPath, bool update,
             int minUnionProperty, string markerInterface, string prefix = "", string postfix = "") : base(assemblyPath, classDirectoryPath)
         {
             _namespace = namespaceS;

@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 using Autofac;
+using Microsoft.EntityFrameworkCore;
 ${namespaces}
 
 namespace ${namespace}
@@ -11,5 +16,22 @@ namespace ${namespace}
 		public ${className}Repository (IComponentContext context) : base(context) 
 		{
 		}
+
+		public async Task<${className}> GetFullAsync(Expression<Func<${className}, bool>> predicate)
+        {
+            ${className} item = null;
+
+            using (var context = _context.Resolve<${EFContext}>())
+            {
+                IQueryable<${className}> dbQuery = context.Set<${className}>();
+
+                item = await dbQuery
+                    .AsNoTracking()
+					${includes}
+                    .FirstOrDefaultAsync(predicate);
+
+            }
+            return item;
+        }
     }
 }

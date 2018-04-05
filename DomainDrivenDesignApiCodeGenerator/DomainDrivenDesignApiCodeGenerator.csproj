@@ -30,6 +30,9 @@
     <None Update="Repositories\Templates\RepositoryEFTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Services\Templates\ServicesInterfacesCodeGenerator.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

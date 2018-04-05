@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using DomainDrivenDesignApiCodeGenerator.Dtos;
 using DomainDrivenDesignApiCodeGenerator.Interfaces;
 using DomainDrivenDesignApiCodeGenerator.Others;
 using DomainDrivenDesignApiCodeGenerator.Repositories;
+using DomainDrivenDesignApiCodeGenerator.Services;
 
 namespace DomainDrivenDesignApiCodeGenerator
 {
@@ -41,30 +44,56 @@ namespace DomainDrivenDesignApiCodeGenerator
             var mapperNamespaces = $"using {modelsNamespace}; {Environment.NewLine}" +
                                    $"using {dtoNamespace}; {Environment.NewLine}";
 
-                                   
-            var dtoCodeGenerator = new DtoCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, false);
+            var ipageQueryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Models\Interfaces\IPageQuery";
+            var iPageQueryNamesapce = "Gymmer.Server.Infrastructure.Models.Interface";
+
+            var pageQueryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Api\Models\PageQuery";
+            var pageQueryNamesapce = "Gymmer.Server.Api.Models";
+            var pageQueryNamespaces = $"using Gymmer.Server.Infrastructure.Models.Interface;";
+
+            var iServiceNamespace = "Gymmer.Server.Infrastructure.Services.Domain.Interfaces";
+            var iServicePath =
+                @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Services\Domain\Interfaces";
+            var iServiceNamespaces = $"using {dtoNamespace};{Environment.NewLine}" +
+                                    $"using {iPageQueryNamesapce};";
+            var ignoredServiceNamespaces = new List<string>
+            {
+                dtoNamespace
+            };
+
+            var dtoCodeGenerator = new DtosCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, false);
             dtoCodeGenerator.Generate();
 
             var interfaceGenerator =
-                new InterfaceCodeGenerator(modelsPath, modelsNamespace, assembly, true, 3, "IGymmerObject", postfix: "Provider");
+                new InterfacesCodeGenerator(modelsPath, modelsNamespace, assembly, true, 3, "IGymmerObject", postfix: "Provider");
             interfaceGenerator.Generate();
 
             var dtoInterfaceGenerator =
-                new InterfaceCodeGenerator(dtoPath, dtoNamespace, dtoAssembly, true, 3, "IDto", "Dto");
+                new InterfacesCodeGenerator(dtoPath, dtoNamespace, dtoAssembly, true, 3, "IDto", "Dto");
             dtoInterfaceGenerator.Generate();
 
             var sortFuncGenerator = new SortFuncCodeGenerator(sortFuncPath, sortFuncNamespace, true);
             sortFuncGenerator.Generate();
 
-            var interfaceRepositoryCodeGenerator = new InterfaceRepositoryCodeGenerator(modelsNamespace,
+            var interfaceRepositoryCodeGenerator = new InterfacesRepositoriesCodeGenerator(modelsNamespace,
                 repositoryNamespace, repostioryPath, true, assembly, interfaceRepositoryNamespaces);
             interfaceRepositoryCodeGenerator.Generate();
 
-            var efRepositoryCodeGenerator = new EFRepositoryCodeGenerator(context, entityMarker, idProvider, modelsNamespace, entityFrameworkRepositoryNamespace, efRepositoryPath, true, assembly, efRepoNamespaces);
+            var efRepositoryCodeGenerator = new EFRepositoriesCodeGenerator(context, entityMarker, idProvider, modelsNamespace, entityFrameworkRepositoryNamespace, efRepositoryPath, true, assembly, efRepoNamespaces);
             efRepositoryCodeGenerator.Generate();
 
             var mapperCodeGenerator = new AutoMapperConfigCodeGenerator(mapperNamespaces,  modelsNamespace,mapperPath, mapperMamespace, true, assembly);
             mapperCodeGenerator.Generate();
+
+            var iPageQueryCodeGenerator = new IPageQueryCodeGenerator(ipageQueryPath, iPageQueryNamesapce, true);
+            iPageQueryCodeGenerator.Generate();
+
+            var pageQuery = new PageQueryCodeGenerator(pageQueryPath, pageQueryNamesapce, pageQueryNamespaces, true);
+            pageQuery.Generate();
+
+            var serviceCodeGenerator = new InterfacesServicesCodeGenerator(dtoAssembly, assembly, iServiceNamespaces,
+                modelsNamespace, iServiceNamespace, iServicePath, dtoNamespace, ignoredServiceNamespaces, true);
+            serviceCodeGenerator.Generate();
 
             Console.WriteLine("End.");
 

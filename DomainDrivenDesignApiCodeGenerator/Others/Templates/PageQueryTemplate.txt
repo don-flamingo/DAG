@@ -1,0 +1,36 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+${namespaces}
+
+namespace ${namespace}
+{
+    public class PageQuery : IPageQuery
+    {
+        [FromQuery]
+        public string Where
+        {
+            get => _where;
+            set => _where = Base64UrlEncoder.Decode(value);
+        }
+
+        [FromQuery]
+        public string OrderBy
+        {
+            get => _orderBy;
+            set => _orderBy = Base64UrlEncoder.Decode(value);
+        }
+
+        [FromQuery]
+        public int? Page { get; set; } = 0;
+
+        [FromQuery]
+        public int? PageSize { get; set; } = 20;
+
+        private string _where = "";
+
+        private string _orderBy = "";
+
+        public override string ToString()
+            => $"where: {Where}, orderBy {OrderBy}, page {Page}, pageSize {PageSize}";
+    }
+}

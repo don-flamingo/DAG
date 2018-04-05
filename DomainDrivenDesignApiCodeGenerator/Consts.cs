@@ -13,5 +13,7 @@
         public const string EFContext = "${EFContext}";
         public const string EntityMarker = "${entityMarker}";
         public const string IdProvider = "${idInterfaceProvider)";
+        public const string CreateMethodParams = "${createMethodParams}";
+        public const string Inlcudes = "${includes}";
     }
 }

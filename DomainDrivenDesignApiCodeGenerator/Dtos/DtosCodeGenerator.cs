@@ -7,9 +7,9 @@ using DomainDrivenDesignApiCodeGenerator.Helpers;
 
 namespace DomainDrivenDesignApiCodeGenerator.Dtos
 {
-    public class DtoCodeGenerator : BaseDtoCodeGenerator
+    public class DtosCodeGenerator : BaseDtosCodeGenerator
     {
-        public DtoCodeGenerator(string dtoNamespaceS, string classDirectoryPath, string modelsNamespace,
+        public DtosCodeGenerator(string dtoNamespaceS, string classDirectoryPath, string modelsNamespace,
             string assemblyPath, bool isUpdate) : base(dtoNamespaceS, classDirectoryPath, modelsNamespace, assemblyPath,
             isUpdate)
         {

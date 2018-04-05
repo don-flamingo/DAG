@@ -19,6 +19,17 @@ namespace DomainDrivenDesignApiCodeGenerator.Helpers
             return propertyType.Replace("`1", "");
         }
 
+        public static string GetPropertyTypeName(this PropertyInfo property)
+        {
+            var propertyType = property.PropertyType.Name;
+
+            if (property.PropertyType.IsGenericType)
+                propertyType =
+                    $"{propertyType}<{property.PropertyType.GetGenericArguments()[0]}>";
+
+            return propertyType.Replace("`1", "");
+        }
+
         public static string GetPropertyTypeNameForDto(this PropertyInfo property, string modelsNamespace)
         {
             var propertyType = property.PropertyType.Name;

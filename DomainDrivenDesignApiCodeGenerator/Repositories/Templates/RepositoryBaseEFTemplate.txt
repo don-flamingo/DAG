@@ -75,6 +75,7 @@ namespace ${namespace}
             return item;
         }
 
+
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null,
             SortFunc<TEntity>[] navigationProperties = null, int? page = 0, int? pageSize = 20)
         {
