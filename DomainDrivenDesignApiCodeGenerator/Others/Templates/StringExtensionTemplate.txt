@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ${namespace}
+{
+    public static class StringExtension
+    {
+        public static bool Empty(this string value)
+            => string.IsNullOrEmpty(value);
+    }
+}

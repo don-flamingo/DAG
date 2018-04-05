@@ -1,0 +1,79 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+${namespaces}
+
+namespace ${namespace}
+{
+    public partial class ${className}Service : BaseDomainService, I${className}Service
+    {
+		private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
+		private readonly IMapper _mapper;
+		private readonly IMemoryCache _cache;
+		private readonly I${className}Repository _repository;
+
+		public ${className}Service (I${className}Repository repository, IMapper mapper, IMemoryCache cache)
+        {
+			_mapper = mapper;
+			_cache = cache;
+			_repository = repository;
+        }
+
+		public async Task CreateAsync(${createMethodParams})
+		{
+			_logger.Info("Creating ${className} with params ${createMethodParamsLogged}")
+
+			var ${classNameLower} = new ${className} 
+			{
+				${classBody}
+			};
+
+			await _repository.CreateAsync(${classNameLower});
+			
+			var ${classNameLower}Dto = _mapper.Map<${className}Dto>($classNameLower);
+			_cache.SetDto(${classNameLower}Dto);
+		}
+
+		public async Task UpdateAsync(Guid id, JsonPatchDocument<CompanyDto> jsonPatchUpdateDocument, Guid modifedBy) 
+		{
+			_logger.Info($"Updating ${className}: {id} with document {jsonPatchUpdateDocument} by {modifedBy} ");
+
+            var ${classNameLower}Dto = await GetAsync(id);
+            var ${classNameLower}DtoCopy = ${classNameLower}Dto.Copy();
+
+			jsonPatchUpdateDocument.ApplyTo(${classNameLower}DtoCopy);
+			var new${classNameLower} = _mapper.Map<${className}>(${classNameLower}DtoCopy);
+			await _repository.UpdateAsync(new${classNameLower});
+
+			var patchResult = new PatchResult<${className}Dto>
+			{
+				Old = ${classNameLower}Dto,
+				Patched = ${classNameLower}DtoCopy
+			};
+
+			_cache.SetPatchResult(id, patchResult);
+		}
+
+		public async Task DeleteAsync(Guid id, Guid modifiedBy)
+		{
+			_logger.Info($"Deleting ${className}: {id} by {modifedBy} ");
+			await _repository.DeleteAsync(id);
+		}
+
+		public async Task<${className}Dto> GetAsync(Guid id)
+		{
+			var ${classNameLower} = await _repository.GetAsync(x => x.Id == id);
+			return _mapper.Map<${className}Dto>(${classNameLower});
+		}
+
+		public async Task<IEnumerable<${className}Dto>> GetListAsync(IPageQuery query)
+		{
+			(var predicate, var navigationProperties) = CreateNavigationFunctions(query);
+            var items = await _repository.GetAllAsync(predicate, navigationProperties, query.Page, query.PageSize);
+			return _mapper.Map<IEnumerable<${className}Dto>>(items);
+		}
+
+
+    }
+}

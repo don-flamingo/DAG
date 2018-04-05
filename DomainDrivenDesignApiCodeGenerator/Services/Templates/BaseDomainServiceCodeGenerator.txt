@@ -1,0 +1,19 @@
+﻿using System;
+using System.Linq.Expressions;
+using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
+
+namespace ${namespace}
+{
+    public class BaseDomainService
+    {
+	    protected readonly IMapper _mapper;
+		protected readonly IMemoryCache _cache;
+
+		protected BaseDomainService(IMapper mapper, IMemoryCache cache)
+		{
+			_mapper = mapper;
+			_cache = cache;
+		}
+    }
+}

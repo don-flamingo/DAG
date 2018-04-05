@@ -11,7 +11,7 @@ namespace ${namespace}
 
         public bool IsDesc { get; set; }
 
-		// Code from: https://www.red-gate.com/simple-talk/dotnet/net-framework/dynamic-linq-queries-with-expression-trees/
+		// Code from: https://www.red-gate.com/simple-talk/dotnet/net-Common/dynamic-linq-queries-with-expression-trees/
         // Fixes from: https://stackoverflow.com/questions/31955025/generate-ef-orderby-expression-by-string
         /// <summary>
         /// Create sort predicate from string
@@ -49,10 +49,10 @@ namespace ${namespace}
                 });
             }
 
-
             return navigation.AsEnumerable()
                 .Reverse()
                 .ToArray();
         }
+
     }
 }

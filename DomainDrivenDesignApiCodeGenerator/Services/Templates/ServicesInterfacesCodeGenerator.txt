@@ -10,7 +10,7 @@ namespace ${namespace}
     {
         Task CreateAsync(${createMethodParams});
 
-        Task UpdateAsync(Guid id, JsonPatchDocument<${className}Dto> companyPatchUpdate, Guid modifedBy);
+        Task UpdateAsync(Guid id, JsonPatchDocument<${className}Dto> jsonPatchUpdateDocument, Guid modifedBy);
 
         Task DeleteAsync(Guid id, Guid modifiedBy);
 

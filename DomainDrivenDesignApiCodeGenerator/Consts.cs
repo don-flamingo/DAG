@@ -15,5 +15,8 @@
         public const string IdProvider = "${idInterfaceProvider)";
         public const string CreateMethodParams = "${createMethodParams}";
         public const string Inlcudes = "${includes}";
+        public const string ClassBody = "${classBody}";
+        public const string ClassNameToLower = "${classNameLower}";
+        public const string CreateMethodParamsLogged = "${createMethodParamsLogged}";
     }
 }

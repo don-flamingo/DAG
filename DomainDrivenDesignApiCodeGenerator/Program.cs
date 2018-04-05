@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Threading;
 using DomainDrivenDesignApiCodeGenerator.Dtos;
 using DomainDrivenDesignApiCodeGenerator.Interfaces;
@@ -15,33 +16,41 @@ namespace DomainDrivenDesignApiCodeGenerator
         static void Main(string[] args)
         {
             var mainCodePath = @"D:\Codes\My\Gymmer\src";
+            var projectName = "Gymmer";
 
-            var frameworkNamespace = "Gymmer.Framework";
-            var frameworkCodePath = Path.Combine(mainCodePath, frameworkNamespace);
+            var CommonNamespace = "Gymmer.Common";
+            var CommonCodePath = Path.Combine(mainCodePath, CommonNamespace);
+            var commonExtensionsPath = Path.Combine(CommonCodePath, "Extensions");
+            var commonExtensionsNamespace = $"{CommonNamespace}.Extensions";
+
+            var infrastrucutreNamespace = $"{projectName}.Server.Infrastructure";
+            var infrastracturePath = Path.Combine(mainCodePath, $"{projectName}.Server",
+                infrastrucutreNamespace);
+            
             
 
-            var dtoNamespace = "Gymmer.Framework.Dtos";
+            var dtoNamespace = "Gymmer.Common.Dtos";
             var modelsNamespace = "Gymmer.Server.Core.Models";
-            var dtoPath = @"D:\Codes\My\Gymmer\src\Gymmer.Framework\Dtos";
+            var dtoPath = @"D:\Codes\My\Gymmer\src\Gymmer.Common\Dtos";
             var modelsPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Models";
             var assembly =
                 @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\bin\Debug\netcoreapp2.0\Gymmer.Server.Core.dll";
-            var dtoAssembly = @"D:\Codes\My\Gymmer\src\Gymmer.Framework\bin\Debug\netstandard2.0\Gymmer.Framework.dll";
+            var dtoAssembly = @"D:\Codes\My\Gymmer\src\Gymmer.Common\bin\Debug\netstandard2.0\Gymmer.Common.dll";
 
-            var sortFuncPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Framework";
-            var sortFuncNamespace = "Gymmer.Server.Core.Framework";
+            var sortFuncPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Common";
+            var sortFuncNamespace = "Gymmer.Server.Core.Common";
 
             var repositoryNamespace = "Gymmer.Server.Core.Repositories";
             var repostioryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Repositories";
-            var interfaceRepositoryNamespaces = $"using Gymmer.Server.Core.Framework; {Environment.NewLine}" +
+            var interfaceRepositoryNamespaces = $"using Gymmer.Server.Core.Common; {Environment.NewLine}" +
                                                 $"using Gymmer.Server.Core.Models;";
 
-            var entityFrameworkRepositoryNamespace = "Gymmer.Server.Infrastructure.Repositories.EF";
+            var entityCommonRepositoryNamespace = "Gymmer.Server.Infrastructure.Repositories.EF";
             var efRepositoryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Repositories\EF";
             var context = "GymmerContext";
             var entityMarker = "IGymmerObject";
             var idProvider = "IIdProvider";
-            var efRepoNamespaces = $"using Gymmer.Server.Core.Framework; {Environment.NewLine}" +
+            var efRepoNamespaces = $"using Gymmer.Server.Core.Common; {Environment.NewLine}" +
                                    $"using Gymmer.Server.Core.Models; {Environment.NewLine}" +
                                    $"using Gymmer.Server.Core.Models.Interfaces; {Environment.NewLine}" +
                                    $"using Gymmer.Server.Core.Repositories; {Environment.NewLine}";
@@ -86,7 +95,7 @@ namespace DomainDrivenDesignApiCodeGenerator
                 repositoryNamespace, repostioryPath, true, assembly, interfaceRepositoryNamespaces);
             interfaceRepositoryCodeGenerator.Generate();
 
-            var efRepositoryCodeGenerator = new EFRepositoriesCodeGenerator(context, entityMarker, idProvider, modelsNamespace, entityFrameworkRepositoryNamespace, efRepositoryPath, true, assembly, efRepoNamespaces);
+            var efRepositoryCodeGenerator = new EFRepositoriesCodeGenerator(context, entityMarker, idProvider, modelsNamespace, entityCommonRepositoryNamespace, efRepositoryPath, true, assembly, efRepoNamespaces);
             efRepositoryCodeGenerator.Generate();
 
             var mapperCodeGenerator = new AutoMapperConfigCodeGenerator(mapperNamespaces,  modelsNamespace,mapperPath, mapperMamespace, true, assembly);
@@ -102,13 +111,31 @@ namespace DomainDrivenDesignApiCodeGenerator
                 modelsNamespace, iServiceNamespace, iServicePath, dtoNamespace, ignoredServiceNamespaces, true);
             serviceCodeGenerator.Generate();
 
-            var libraryWrappers = Path.Combine(frameworkCodePath, "Wrappers");
-            var wrappersNamespace = $"{frameworkNamespace}.Wrappers";
+            var libraryWrappers = Path.Combine(CommonCodePath, "Wrappers");
+            var commonWwrappersNamespace = $"{CommonNamespace}.Wrappers";
 
             var pathNamesapces = $"using {dtoNamespace}.Interfaces;";
 
-            var patchResultCodeGenerator = new PatchResultCodeGenerator(libraryWrappers, wrappersNamespace, true, pathNamesapces);
+            var patchResultCodeGenerator = new PatchResultCodeGenerator(libraryWrappers, commonWwrappersNamespace, true, pathNamesapces);
             patchResultCodeGenerator.Generate();
+
+            var infrastrucutreHelpersPath = Path.Combine(infrastracturePath, "Helpers");
+            var infrastructureHelpersNamespace = $"{infrastrucutreNamespace}.Helpers";
+            var usingNamespaces = $"using {sortFuncNamespace};{Environment.NewLine}" +
+                                  $"using {iPageQueryNamesapce};{Environment.NewLine}" +
+                                  $"using {commonExtensionsNamespace};";
+
+            var sortFuncHelperCodeGenerator = new SortFunctionHelperCodeGenerator(
+                infrastrucutreHelpersPath, infrastructureHelpersNamespace, usingNamespaces, true);
+            sortFuncHelperCodeGenerator.Generate();
+
+            var predicateHelperCodeGenerator =
+                new PredicateHelperCodeGenerator(infrastrucutreHelpersPath, infrastructureHelpersNamespace, true);
+            predicateHelperCodeGenerator.Generate();
+
+            var stringExtensionCodeGenerator =
+                new StringExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true);
+            stringExtensionCodeGenerator.Generate();
 
             Console.WriteLine("End.");
 
