@@ -144,19 +144,39 @@ namespace DomainDrivenDesignApiCodeGenerator
                 new StringExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true);
             stringExtensionCodeGenerator.Generate();
 
-            var cacheExtenionsNamespace = $"using {dtoNamespace};{Environment.NewLine}" +
+            var extenionsNamespaces = $"using {dtoNamespace};{Environment.NewLine}" +
                                           $"using {dtoNamespace}.Interfaces;{Environment.NewLine}" +
                                           $"using {commonWwrappersNamespace};{Environment.NewLine}" +
                                           $"using {infrastrucutreSettingsNamespace};";
 
             var cacheExtensionsCodeGenerator = 
-                new CacheExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, cacheExtenionsNamespace, true);
+                new CacheExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, extenionsNamespaces, true);
             cacheExtensionsCodeGenerator.Generate();
 
             var jwtDtoNamespaces = $"using {dtoNamespace}.Interfaces;";
             var jwtDtoCodeGenerator = 
                 new JwtDtoCodeGenerator(dtoPath, dtoNamespace, jwtDtoNamespaces, true );
             jwtDtoCodeGenerator.Generate();
+
+            var domainServicesPath = Path.Combine(infrastracturePath, "Services");
+            var domainServiceNamespace = $"{infrastrucutreNamespace}.Services";
+            var domainServicesNamespaces = $"using {dtoNamespace};{Environment.NewLine}" +
+                                           $"using {commonExtensionsNamespace};{Environment.NewLine}" +
+                                           $"using {commonWwrappersNamespace};{Environment.NewLine}" +
+                                           $"using {repositoryNamespace};{Environment.NewLine}" +
+                                           $"using {modelsNamespace};{Environment.NewLine}" +
+                                           $"using {iServiceNamespace};{Environment.NewLine}" +
+                                           $"using {infrastructureHelpersNamespace};{Environment.NewLine}" +
+                                           $"using {iPageQueryNamesapce};{Environment.NewLine}" +
+                                           $"using {infrastrucutreExtensionsNamespace};{Environment.NewLine}";
+
+            var domainServicesCodeGenerator = new DomainServicesCodeGenerator(dtoAssembly, assembly,
+                domainServicesNamespaces, modelsNamespace, domainServiceNamespace,
+                domainServicesPath, dtoNamespace, ignoredServiceNamespaces, true);
+            domainServicesCodeGenerator.Generate();
+
+            var objExtensionCodeGenerator = new ObjectExtensionsCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true);
+            objExtensionCodeGenerator.Generate();
 
             Console.WriteLine("End.");
 

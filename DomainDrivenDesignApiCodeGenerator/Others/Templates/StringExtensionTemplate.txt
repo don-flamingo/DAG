@@ -8,5 +8,8 @@ namespace ${namespace}
     {
         public static bool Empty(this string value)
             => string.IsNullOrEmpty(value);
+
+        public static string FirstLetterToLower(this string name)
+            => char.ToLowerInvariant(name[0]) + name.Substring(1);
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using DomainDrivenDesignApiCodeGenerator.Extensions;
 using DomainDrivenDesignApiCodeGenerator.Helpers;
 using DomainDrivenDesignApiCodeGenerator.Repositories;
 
@@ -13,9 +14,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
     {
         public const string AllTypes = "$All";
 
-        private readonly string _assemblyDtoPath;
-        private readonly string _dtoNamespace;
-        private readonly IList<string> _ignoredNamespaces;
+        protected readonly string _assemblyDtoPath;
+        protected readonly string _dtoNamespace;
+        protected readonly IList<string> _ignoredNamespaces;
 
         private readonly IDictionary<string, IList<string>> _ignoredProps;
 
@@ -59,10 +60,10 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
                 if (ignoredProps.Contains(prop.Name))
                     continue;
 
-                if (_ignoredNamespaces.Contains(prop.PropertyType.Namespace))
+                if (prop.IsInNamespaces(_ignoredNamespaces.ToArray()))
                     continue;
 
-                sb.Append($"{prop.GetPropertyTypeName()} {prop.Name}, ");
+                sb.Append($"{prop.GetPropertyTypeName()} {prop.Name.FirstLetterToLower()}, ");
             }
 
             sb = sb.Remove(sb.Length - 2, 2); // remove ", "
@@ -71,7 +72,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
                 .Replace(Consts.CreateMethodParams, sb.ToString());
         }
 
-        private IList<string> GetIgnoredProps(Type model)
+        protected IList<string> GetIgnoredProps(Type model)
         {
             var ignoredProps = new List<string>();
 

@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using NLog;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Caching.Memory;
 ${namespaces}
+
 
 namespace ${namespace}
 {
@@ -9,29 +15,29 @@ namespace ${namespace}
     {
 		private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-		private readonly I${className}Repository _repository;
+		private readonly I${className}Repository _${classNameLower}Repository;
 
-		public ${className}Service (I${className}Repository repository, IMapper mapper, IMemoryCache cache) : base(mapper, cache)
+		public ${className}Service (I${className}Repository ${classNameLower}Repository, IMapper mapper, IMemoryCache cache) : base(mapper, cache)
         {
-			_repository = repository;
+			_${classNameLower}Repository = ${classNameLower}Repository;
         }
 
 		public async Task CreateAsync(${createMethodParams})
 		{
-			_logger.Info("Creating ${className} with params ${createMethodParamsLogged}")
+			_logger.Info("Creating ${className} with params ${createMethodParamsLogged}");
 
 			var ${classNameLower} = new ${className} 
 			{
-				${classBody}
+${classBody}
 			};
 
-			await _repository.CreateAsync(${classNameLower});
+			await _${classNameLower}Repository.CreateAsync(${classNameLower});
 			
-			var ${classNameLower}Dto = _mapper.Map<${className}Dto>($classNameLower);
+			var ${classNameLower}Dto = _mapper.Map<${className}Dto>(${classNameLower});
 			_cache.SetDto(${classNameLower}Dto);
 		}
 
-		public async Task UpdateAsync(Guid id, JsonPatchDocument<CompanyDto> jsonPatchUpdateDocument, Guid modifedBy) 
+		public async Task UpdateAsync(Guid id, JsonPatchDocument<${className}Dto> jsonPatchUpdateDocument, Guid modifedBy) 
 		{
 			_logger.Info($"Updating ${className}: {id} with document {jsonPatchUpdateDocument} by {modifedBy} ");
 
@@ -40,7 +46,7 @@ namespace ${namespace}
 
 			jsonPatchUpdateDocument.ApplyTo(${classNameLower}DtoCopy);
 			var new${classNameLower} = _mapper.Map<${className}>(${classNameLower}DtoCopy);
-			await _repository.UpdateAsync(new${classNameLower});
+			await _${classNameLower}Repository.UpdateAsync(new${classNameLower});
 
 			var patchResult = new PatchResult<${className}Dto>
 			{
@@ -53,20 +59,20 @@ namespace ${namespace}
 
 		public async Task DeleteAsync(Guid id, Guid modifiedBy)
 		{
-			_logger.Info($"Deleting ${className}: {id} by {modifedBy} ");
-			await _repository.DeleteAsync(id);
+			_logger.Info($"Deleting ${className}: {id} by {modifiedBy} ");
+			await _${classNameLower}Repository.DeleteAsync(id);
 		}
 
 		public async Task<${className}Dto> GetAsync(Guid id)
 		{
-			var ${classNameLower} = await _repository.GetAsync(x => x.Id == id);
+			var ${classNameLower} = await _${classNameLower}Repository.GetAsync(x => x.Id == id);
 			return _mapper.Map<${className}Dto>(${classNameLower});
 		}
 
 		public async Task<IEnumerable<${className}Dto>> GetListAsync(IPageQuery query)
 		{
 			(var predicate, var navigationProperties) = NavigationFunctionHelper.CreateGeneric<${className}>(query);
-            var items = await _repository.GetAllAsync(predicate, navigationProperties, query.Page, query.PageSize);
+            var items = await _${classNameLower}Repository.GetAllAsync(predicate, navigationProperties, query.Page, query.PageSize);
 			return _mapper.Map<IEnumerable<${className}Dto>>(items);
 		}
 

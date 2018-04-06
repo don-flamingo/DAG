@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using DomainDrivenDesignApiCodeGenerator.Interfaces;
@@ -29,6 +30,11 @@ namespace DomainDrivenDesignApiCodeGenerator.Helpers
 
             return propertyType.Replace("`1", "");
         }
+
+        public static bool IsInNamespaces(this PropertyInfo property, params string[] namespacesList) 
+            => namespacesList.Any(@namespace => 
+                property.PropertyType.Namespace.Equals(@namespace) ||
+                (property.PropertyType.IsGenericType && property.PropertyType.GenericTypeArguments[0].Namespace.Equals(@namespace)));
 
         public static string GetPropertyTypeNameForDto(this PropertyInfo property, string modelsNamespace)
         {
