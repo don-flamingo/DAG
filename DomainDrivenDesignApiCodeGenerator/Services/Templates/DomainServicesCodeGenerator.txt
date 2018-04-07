@@ -22,9 +22,9 @@ namespace ${namespace}
 			_${classNameLower}Repository = ${classNameLower}Repository;
         }
 
-		public async Task CreateAsync(${createMethodParams})
+		public async Task CreateAsync(${createMethodParams}, Guid? createdBy = null)
 		{
-			_logger.Info("Creating ${className} with params ${createMethodParamsLogged}");
+			_logger.Info($"Creating ${className} with params ${createMethodParamsLogged} by {createdBy}");
 
 			var ${classNameLower} = new ${className} 
 			{
@@ -37,9 +37,9 @@ ${classBody}
 			_cache.SetDto(${classNameLower}Dto);
 		}
 
-		public async Task UpdateAsync(Guid id, JsonPatchDocument<${className}Dto> jsonPatchUpdateDocument, Guid modifedBy) 
+		public async Task UpdateAsync(Guid id, JsonPatchDocument<${className}Dto> jsonPatchUpdateDocument, Guid modifiedBy) 
 		{
-			_logger.Info($"Updating ${className}: {id} with document {jsonPatchUpdateDocument} by {modifedBy} ");
+			_logger.Info($"Updating ${className}: {id} with document {jsonPatchUpdateDocument} by {modifiedBy} ");
 
             var ${classNameLower}Dto = await GetAsync(id);
             var ${classNameLower}DtoCopy = ${classNameLower}Dto.Copy();

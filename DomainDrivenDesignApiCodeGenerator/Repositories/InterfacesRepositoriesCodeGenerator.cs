@@ -24,7 +24,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
         {
             public MarkerRepositoryCodeGenerator(string classPath, string @namespace, bool update,
                 string assemblyPath = "")
-                : base(Path.Combine(classPath, "IRepository.cs"), @namespace,
+                : base(Path.Combine(classPath, "IRepository"), @namespace,
                     Path.Combine("Repositories", "Templates", "RepositoryMarkerInterfaceTemplate.txt"), update,
                     assemblyPath)
             {

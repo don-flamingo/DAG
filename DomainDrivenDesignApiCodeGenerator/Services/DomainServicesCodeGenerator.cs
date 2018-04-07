@@ -23,6 +23,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
         {
             var sbMethodArgs = new StringBuilder();
             var sbEntityCtr = new StringBuilder();
+            var sbLoggedParams = new StringBuilder();
 
             var ignoredProps = GetIgnoredProps(model);
 
@@ -39,13 +40,16 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
 
                 sbMethodArgs.Append($"{prop.GetPropertyTypeName()} {prop.Name.FirstLetterToLower()}, ");
                 sbEntityCtr.AppendLine($"\t\t\t\t{prop.Name} = {prop.Name.FirstLetterToLower()},");
+                sbLoggedParams.Append($"{{{prop.Name.FirstLetterToLower()}}} ");
             }
 
             sbMethodArgs = sbMethodArgs.Remove(sbMethodArgs.Length - 2, 2); // remove last ", "
             sbEntityCtr = sbEntityCtr.Remove(sbEntityCtr.Length - 1, 1); // remove last ","
+            sbLoggedParams = sbLoggedParams.Remove(sbLoggedParams.Length - 1, 1); // remove last " "
 
             return template
                 .Replace(Consts.Classname, model.Name)
+                .Replace(Consts.CreateMethodParamsLogged, sbLoggedParams.ToString())
                 .Replace(Consts.ClassNameToLower, model.Name.FirstLetterToLower())
                 .Replace(Consts.ClassBody, sbEntityCtr.ToString())
                 .Replace(Consts.Namespaces, _usingNamespaces)

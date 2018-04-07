@@ -75,9 +75,17 @@ namespace DomainDrivenDesignApiCodeGenerator
                 @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Services\Domain\Interfaces";
             var iServiceNamespaces = $"using {dtoNamespace};{Environment.NewLine}" +
                                     $"using {iPageQueryNamesapce};";
+
             var ignoredServiceNamespaces = new List<string>
             {
                 dtoNamespace
+            };
+
+            var ignoredProps = new List<string>
+            {
+                "Modified",
+                "Status",
+                "Created"
             };
 
             var dtoCodeGenerator = new DtosCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, false);
@@ -112,6 +120,7 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             var serviceCodeGenerator = new InterfacesServicesCodeGenerator(dtoAssembly, assembly, iServiceNamespaces,
                 modelsNamespace, iServiceNamespace, iServicePath, dtoNamespace, ignoredServiceNamespaces, true);
+            serviceCodeGenerator.AddIgnoredProps(ignoredProps);
             serviceCodeGenerator.Generate();
 
             var libraryWrappers = Path.Combine(CommonCodePath, "Wrappers");
@@ -173,6 +182,7 @@ namespace DomainDrivenDesignApiCodeGenerator
             var domainServicesCodeGenerator = new DomainServicesCodeGenerator(dtoAssembly, assembly,
                 domainServicesNamespaces, modelsNamespace, domainServiceNamespace,
                 domainServicesPath, dtoNamespace, ignoredServiceNamespaces, true);
+            domainServicesCodeGenerator.AddIgnoredProps(ignoredProps);
             domainServicesCodeGenerator.Generate();
 
             var objExtensionCodeGenerator = new ObjectExtensionsCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true);

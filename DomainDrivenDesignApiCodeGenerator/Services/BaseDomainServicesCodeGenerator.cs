@@ -74,18 +74,18 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
 
         protected IList<string> GetIgnoredProps(Type model)
         {
-            var ignoredProps = new List<string>();
+            IEnumerable<string> ignoredProps = new List<string>();
 
             if (_ignoredProps.Count == 0)
-                return ignoredProps;
+                return ignoredProps.ToList();
 
             if (_ignoredProps.ContainsKey(AllTypes))
-                ignoredProps.Union(_ignoredProps[AllTypes]);
+                ignoredProps = ignoredProps.Union(_ignoredProps[AllTypes]);
 
             if (_ignoredProps.ContainsKey(model.Name))
-                ignoredProps.Union(_ignoredProps[AllTypes]);
+                ignoredProps = ignoredProps.Union(_ignoredProps[AllTypes]);
 
-            return ignoredProps;
+            return ignoredProps.ToList();
         }
 
 

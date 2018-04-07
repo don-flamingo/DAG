@@ -8,9 +8,9 @@ namespace ${namespace}
 {
     public interface I${className}Service : IDomainService
     {
-        Task CreateAsync(${createMethodParams});
+        Task CreateAsync(${createMethodParams}, Guid? createdBy = null);
 
-        Task UpdateAsync(Guid id, JsonPatchDocument<${className}Dto> jsonPatchUpdateDocument, Guid modifedBy);
+        Task UpdateAsync(Guid id, JsonPatchDocument<${className}Dto> jsonPatchUpdateDocument, Guid modifiedBy);
 
         Task DeleteAsync(Guid id, Guid modifiedBy);
 
