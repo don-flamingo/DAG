@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ${namespace}
+{
+    public class JwtSettings
+    {
+        public static string Key { get; set; }
+        public static int ExpiryMinutes { get; set; }
+        public static string Issuer { get; set; }
+    }
+}
