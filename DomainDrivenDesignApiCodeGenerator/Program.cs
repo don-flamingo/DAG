@@ -232,14 +232,18 @@ namespace DomainDrivenDesignApiCodeGenerator
                 $"using {commonExtensionsNamespace};{Environment.NewLine}" +
                 $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}" +
                 $"using {infraInterfacesServicesNamespace};{Environment.NewLine}";
+            var encrypterNamespaces =
+                $"using {commonExtensionsNamespace};{Environment.NewLine}" +
+                $"using {infraInterfacesServicesNamespace}";
 
             new DateTimeExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true).Generate();
             new IJwtHandlerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, iJwtNamespaces, true ).Generate();
             new JwtHandlerCodeGenerator(infraServicesPath, infraServicesNamespace, jwtNamespaces, true).Generate();
             new JwtSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true).Generate();
+            new IEncrypterCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, true).Generate();
+            new EncrypterCodeGenerator(infraServicesPath, infraServicesNamespace, encrypterNamespaces, true).Generate();
 
             Console.WriteLine("End.");
-
             Console.ReadLine();
 
         }

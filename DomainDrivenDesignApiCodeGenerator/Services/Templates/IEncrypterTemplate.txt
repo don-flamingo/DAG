@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ${namespace}
+{
+    public interface IEncrypter
+    {
+        string GetRandomPassword(int length);
+        string GetSalt(string value);
+        string GetHash(string value, string salt);
+    }
+}

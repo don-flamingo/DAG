@@ -76,8 +76,14 @@
     <None Update="Services\Templates\DomainServicesInterfacesTemplate.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Services\Templates\EncrypterTemplate.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Services\Templates\IDomainServiceTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Services\Templates\IEncrypterTemplate.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Services\Templates\IJwtHandlerTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
