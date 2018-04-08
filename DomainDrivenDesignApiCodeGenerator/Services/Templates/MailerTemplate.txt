@@ -1,0 +1,92 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using NLog;
+${namespaces}
+
+namespace ${namespace}
+{
+    public class Mailer : IMailer
+    {
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
+        private readonly IEncrypter _encrypter;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly EmailSettings _mailSettings;
+
+        public Mailer(IEncrypter encrypter, IHostingEnvironment hostingEnvironment, EmailSettings mailSettings)
+        {
+            _encrypter = encrypter;
+            _hostingEnvironment = hostingEnvironment;
+            _mailSettings = mailSettings;
+        }
+
+        public async Task SendRegisterConfirmMessageAsync(User user)
+        {
+            var urlForUserActivate = $"{GeneralSettings.Address}/users/activate/{user.Id}";
+            var messageBody = string.Format(await GetMailBodyAsync("RegisterConfirmMessage"), 
+                user.Name, GeneralSettings.Address, urlForUserActivate);
+            var message = PrepareMessage("Potwierdzenie adresu email",messageBody, user);
+
+            await SendMessageAsync(message);
+        }
+
+        public async Task SendChangePasswordConfirmMessageAsync(User user)
+        {
+            var confirmHash = _encrypter.GetHash(user.Hash, user.Salt);
+            var encodedHash = Base64UrlEncoder.Encode(confirmHash);
+            var confirmLink = $"{GeneralSettings.Address}/users/password/reset/confirm/{user.Id}/{encodedHash}";
+            var messageBody = string.Format(await GetMailBodyAsync("ChangePasswordConfirmMessage"),
+                user.Name, confirmLink);
+            var message = PrepareMessage("Potwierdzenie wygenerowania nowego hasła", messageBody, user);
+
+            await SendMessageAsync(message);
+        }
+
+        public async Task SendNewPasswordToUserAsync(User user, string newPassword)
+        {
+            var messageBody = string.Format(await GetMailBodyAsync("NewPasswordMessage"),
+                user.Name, GeneralSettings.Address, user.Login, newPassword);
+            var message = PrepareMessage("Nowe hasło", messageBody, user);
+
+            await SendMessageAsync(message);
+        }
+
+        private async Task<string> GetMailBodyAsync(string messageName)
+        {
+            var s = Path.DirectorySeparatorChar;
+            var messagePath =
+                $"{_hostingEnvironment.ContentRootPath}{s}MailMessages{s}{messageName}.txt";
+
+            return await File.ReadAllTextAsync(messagePath);
+        }
+
+        private MailMessage PrepareMessage(string subject, string body, User toUser)
+        {
+            //var from = new MailAddress(_mailSettings.Email, _mailSettings.From);
+            //var to = new MailAddress(toUser.Email);
+
+            return new MailMessage(_mailSettings.Email, toUser.Email, subject, body);
+        }
+
+        private async Task SendMessageAsync(MailMessage message)
+        {
+            var smtpClient = new SmtpClient
+            {
+                Host = _mailSettings.Smtp,
+                Port = _mailSettings.Port,
+                EnableSsl = _mailSettings.Ssl,
+                Credentials = new NetworkCredential(_mailSettings.Login, _mailSettings.Password)
+            };
+
+            await smtpClient.SendMailAsync(message);
+        }
+    }
+}

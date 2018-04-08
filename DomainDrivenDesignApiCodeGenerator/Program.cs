@@ -234,7 +234,12 @@ namespace DomainDrivenDesignApiCodeGenerator
                 $"using {infraInterfacesServicesNamespace};{Environment.NewLine}";
             var encrypterNamespaces =
                 $"using {commonExtensionsNamespace};{Environment.NewLine}" +
-                $"using {infraInterfacesServicesNamespace}";
+                $"using {infraInterfacesServicesNamespace};";
+            var imailerNamespaces = $"using {modelsNamespace};";
+            var mailerNamespaces =
+                $"using {modelsNamespace};{Environment.NewLine}" +
+                $"using {infraInterfacesServicesNamespace};{Environment.NewLine}" +
+                $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}";
 
             new DateTimeExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true).Generate();
             new IJwtHandlerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, iJwtNamespaces, true ).Generate();
@@ -242,6 +247,9 @@ namespace DomainDrivenDesignApiCodeGenerator
             new JwtSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true).Generate();
             new IEncrypterCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, true).Generate();
             new EncrypterCodeGenerator(infraServicesPath, infraServicesNamespace, encrypterNamespaces, true).Generate();
+            new EmailSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true).Generate();
+            new MailerCodeGenerator(infraServicesPath, infraServicesNamespace, mailerNamespaces, true).Generate();
+            new IMailerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, imailerNamespaces, true).Generate();
 
             Console.WriteLine("End.");
             Console.ReadLine();

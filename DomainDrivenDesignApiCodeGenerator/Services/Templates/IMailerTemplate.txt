@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+${namespaces}
+
+namespace ${namespace}
+{
+    public interface IMailer
+    {
+        Task SendRegisterConfirmMessageAsync(User user);
+        Task SendChangePasswordConfirmMessageAsync(User user);
+        Task SendNewPasswordToUserAsync(User user, string newPassword);
+    }
+}
