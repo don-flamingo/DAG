@@ -39,7 +39,7 @@ namespace DomainDrivenDesignApiCodeGenerator
             var modelsPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Models";
             var assembly =
                 @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\bin\Debug\netcoreapp2.0\Gymmer.Server.Core.dll";
-            var dtoAssembly = @"D:\Codes\My\Gymmer\src\Gymmer.Common\bin\Debug\netstandard2.0\Gymmer.Common.dll";
+            var commonAssembly = @"D:\Codes\My\Gymmer\src\Gymmer.Common\bin\Debug\netstandard2.0\Gymmer.Common.dll";
 
             var sortFuncPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Common";
             var sortFuncNamespace = "Gymmer.Server.Core.Common";
@@ -97,7 +97,7 @@ namespace DomainDrivenDesignApiCodeGenerator
             interfaceGenerator.Generate();
 
             var dtoInterfaceGenerator =
-                new InterfacesCodeGenerator(dtoPath, dtoNamespace, dtoAssembly, true, 3, "IDto", "Dto", postfix: "Provider");
+                new InterfacesCodeGenerator(dtoPath, dtoNamespace, commonAssembly, true, 3, "IDto", "Dto", postfix: "Provider");
             dtoInterfaceGenerator.Generate();
 
             var sortFuncGenerator = new SortFuncCodeGenerator(sortFuncPath, sortFuncNamespace, true);
@@ -119,7 +119,7 @@ namespace DomainDrivenDesignApiCodeGenerator
             var pageQuery = new PageQueryCodeGenerator(pageQueryPath, pageQueryNamesapce, pageQueryNamespaces, true);
             pageQuery.Generate();
 
-            var serviceCodeGenerator = new InterfacesServicesCodeGenerator(dtoAssembly, assembly, iServiceNamespaces,
+            var serviceCodeGenerator = new InterfacesServicesCodeGenerator(commonAssembly, assembly, iServiceNamespaces,
                 modelsNamespace, iServiceNamespace, iServicePath, dtoNamespace, ignoredServiceNamespaces, true);
             serviceCodeGenerator.AddIgnoredProps(ignoredProps);
             serviceCodeGenerator.Generate();
@@ -168,8 +168,8 @@ namespace DomainDrivenDesignApiCodeGenerator
                 new JwtDtoCodeGenerator(dtoPath, dtoNamespace, jwtDtoNamespaces, true );
             jwtDtoCodeGenerator.Generate();
 
-            var domainServicesPath = Path.Combine(infrastracturePath, "Services");
-            var domainServiceNamespace = $"{infrastrucutreNamespace}.Services";
+            var domainServicesPath = Path.Combine(infrastracturePath , "Services", "Domain");
+            var domainServiceNamespace = $"{infrastrucutreNamespace}.Services.Domain";
             var domainServicesNamespaces = $"using {dtoNamespace};{Environment.NewLine}" +
                                            $"using {commonExtensionsNamespace};{Environment.NewLine}" +
                                            $"using {commonWwrappersNamespace};{Environment.NewLine}" +
@@ -180,7 +180,7 @@ namespace DomainDrivenDesignApiCodeGenerator
                                            $"using {iPageQueryNamesapce};{Environment.NewLine}" +
                                            $"using {infrastrucutreExtensionsNamespace};{Environment.NewLine}";
 
-            var domainServicesCodeGenerator = new DomainServicesCodeGenerator(dtoAssembly, assembly,
+            var domainServicesCodeGenerator = new DomainServicesCodeGenerator(commonAssembly, assembly,
                 domainServicesNamespaces, modelsNamespace, domainServiceNamespace,
                 domainServicesPath, dtoNamespace, ignoredServiceNamespaces, true);
             domainServicesCodeGenerator.AddIgnoredProps(ignoredProps);
@@ -193,9 +193,31 @@ namespace DomainDrivenDesignApiCodeGenerator
             var commandsCodePath = Path.Combine(CommonCodePath, "Commands");
             var commandsNamespaces = "";
 
-            var commandCodeGenerator = new CommandsCodeGenerator(dtoAssembly, assembly, commandsNamespaces, modelsNamespace, commandsNamespace, commandsCodePath, dtoNamespace, ignoredServiceNamespaces, true);
+            var commandCodeGenerator = new CommandsCodeGenerator(commonAssembly, assembly, commandsNamespaces, modelsNamespace, commandsNamespace, commandsCodePath, dtoNamespace, ignoredServiceNamespaces, true);
             commandCodeGenerator.AddIgnoredProps(ignoredProps);
             commandCodeGenerator.Generate();
+
+            var infraCommandsNamespace = $"{infrastrucutreNamespace}.Commands";
+            var infraCommandsPatch = Path.Combine(infrastracturePath, "Commands");
+
+            var commandsHandlersNamespace = $"{infraCommandsNamespace}.Handlers";
+            var commandsHandlerPatch = Path.Combine(infraCommandsPatch, "Handlers");
+            var commandsHandlerNamespaces = $"using {domainServiceNamespace}.Interfaces;";
+
+            var commandsHandlersGenerator = new CommandsHandlersCodeGenerator(commandsNamespace, commandsHandlersNamespace, commandsHandlerPatch, true,
+                commonAssembly, commandsHandlerNamespaces, modelsNamespace, assembly);
+            commandsHandlersGenerator.Generate();
+
+            var iCommandDispatcherNamespaces = $"using {commandsNamespace};{Environment.NewLine}";
+
+            var iCommandDispatcher = new ICommandDispatcherCodeGenerator(infraCommandsPatch, infraCommandsNamespace, iCommandDispatcherNamespaces, true);
+            iCommandDispatcher.Generate();
+
+            var commandDisatcherNamespaces = $"using {commandsNamespace};{Environment.NewLine}" +
+                                             $"using {commandsHandlersNamespace};";
+
+            var cmmandDispatcher = new CommandDispatcherCodeGenerator(infraCommandsPatch, infraCommandsNamespace, commandDisatcherNamespaces, true);
+            cmmandDispatcher.Generate();
 
             Console.WriteLine("End.");
 

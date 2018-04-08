@@ -8,9 +8,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
     public class InterfacesRepositoriesCodeGenerator : BaseClassesFromModelsCodeGenerator
     {
 
-        public InterfacesRepositoriesCodeGenerator(string modelsNamepace, string generateClassesNamespace,
+        public InterfacesRepositoriesCodeGenerator(string commandsNamespace, string generateClassesNamespace,
             string classDirectoryPath, bool update, string assemblyPath, string usingNamespaces) 
-            : base(modelsNamepace, generateClassesNamespace, classDirectoryPath, update,
+            : base(commandsNamespace, generateClassesNamespace, classDirectoryPath, update,
                 assemblyPath, usingNamespaces, Path.Combine("Repositories", "Templates", "RepositoryInterfaceTemplate.txt"), "I{0}Repository")
         {
         }

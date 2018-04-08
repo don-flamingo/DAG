@@ -18,5 +18,6 @@
         public const string ClassBody = "${classBody}";
         public const string ClassNameToLower = "${classNameLower}";
         public const string CreateMethodParamsLogged = "${createMethodParamsLogged}";
+        public const string ANamespaces = "${aNamespaces}";
     }
 }

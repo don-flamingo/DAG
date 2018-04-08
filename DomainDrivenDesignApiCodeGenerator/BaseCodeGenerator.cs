@@ -58,5 +58,11 @@ namespace DomainDrivenDesignApiCodeGenerator
             return assembly.GetClassFromAssemblyNamespace(modelsNamespace);
         }
 
+        protected IEnumerable<Type> GetModelsFromAssembly(string assemblyPath, string modelsNamespace)
+        {
+            var assembly = Assembly.LoadFrom(assemblyPath);
+            return assembly.GetClassFromAssemblyNamespace(modelsNamespace);
+        }
+
     }
 }

@@ -12,9 +12,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
         private readonly string _entityMarker;
         private readonly string _idProvider;
 
-        public EFRepositoriesCodeGenerator(string efContext, string entityMarker, string idProvider, string modelsNamepace, string generateClassesNamespace, string classDirectoryPath,
+        public EFRepositoriesCodeGenerator(string efContext, string entityMarker, string idProvider, string modelsNamespace, string generateClassesNamespace, string classDirectoryPath,
             bool update, string assemblyPath, string usingNamespaces) :
-            base(modelsNamepace, generateClassesNamespace, classDirectoryPath, update, assemblyPath, usingNamespaces,
+            base(modelsNamespace, generateClassesNamespace, classDirectoryPath, update, assemblyPath, usingNamespaces,
                 Path.Combine("Repositories", "Templates", "RepositoryEFTemplate.txt"), "{0}Repository")
         {
             _efContext = efContext;

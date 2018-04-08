@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+${namespaces}
+${aNamespaces}
+
+namespace ${namespace}
+{
+    public partial class ${className}Handler : ICommandHandler<Create${className}Command>, ICommandHandler<PartialUpdate${className}Command>
+    {
+		private readonly I${className}Service _${classNameLower}Service;
+
+		public ${className}Handler (I${className}Service ${classNameLower}Service) 
+		{
+			_${classNameLower}Service = ${classNameLower}Service;
+		}
+
+        public async Task HandleAsync(Create${className}Command command)
+        {
+            await _${classNameLower}Service.CreateAsync(${createMethodParams});
+        }
+
+        public async Task HandleAsync(PartialUpdate${className}Command command)
+        {
+            await _${classNameLower}Service.PartialUpdateAsync(command.Id, command.JsonPatchUpdate, command.RequestBy);
+        }
+
+    }
+}

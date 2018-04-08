@@ -54,12 +54,15 @@ namespace DomainDrivenDesignApiCodeGenerator.Commands
 
             var className = string.Format("Create{0}Command", model.Name);
             var folderName = model.Name;
+            var namespaces = $"using Marvin.JsonPatch;{Environment.NewLine}" +
+                             $"using {_dtoNamespace};";
+
             var body = GetCommandTemplateBody()
-                .Replace(Consts.Classname, model.Name)
+                .Replace(Consts.Classname, className)
                 .Replace(Consts.Namespace, $"{_generateClassesNamespace}.{model.Name}")
                 .Replace(Consts.Body, sbCommandBody.ToString())
-                .Replace(Consts.Interfaces, "")
-                .Replace(Consts.Namespaces, "");
+                .Replace(Consts.Interfaces, $": ICreateCommand<{model.Name}Dto>")
+                .Replace(Consts.Namespaces, namespaces);
 
             CreateClass(Path.Combine(_classDirectoryPath, folderName, className), body, _update);
         }
@@ -73,7 +76,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Commands
             var usedInterfaces = $": IPartialUpdateCommand<{model.Name}Dto>";
             var updateCommandBody  = $"\t\tpublic Guid Id {{ get; set; }}\n" +
                 $"\t\tpublic JsonPatchDocument<{model.Name}Dto> JsonPatchUpdate {{ get; set; }}\n" +
-                "\t\tpublic Guid UserId { get; set; }";
+                "\t\tpublic Guid RequestBy { get; set; }";
 
             var folderName = model.Name;
             var body = GetCommandTemplateBody()
@@ -103,6 +106,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Commands
             new ICommandTemplateCodeGenerator(_classDirectoryPath, _generateClassesNamespace, _update).Generate();
             new IAuthenticatedCommandTemplateCodeGenerator(_classDirectoryPath, _generateClassesNamespace, _update).Generate();
             new IPartialUpdateCommandTemplateCodeGenerator(_classDirectoryPath, _generateClassesNamespace, updateCommandsNamespaces, _update).Generate();
+            new ICreateCommandTemplateCodeGenerator(_classDirectoryPath, _generateClassesNamespace, updateCommandsNamespaces, _update).Generate();
         }
     }
 
@@ -126,6 +130,15 @@ namespace DomainDrivenDesignApiCodeGenerator.Commands
     {
         public IPartialUpdateCommandTemplateCodeGenerator(string filePath, string @namespace, string namespaces, bool update)
             : base(Path.Combine(filePath, "IPartialUpdateCommand"), @namespace, Path.Combine("Commands", "Templates", "IPartialUpdateCommandTemplate.txt"), update)
+        {
+            AddBodyTemplateResolver(Consts.Namespaces, namespaces);
+        }
+    }
+
+    internal class ICreateCommandTemplateCodeGenerator : BaseClassCodeGenerator
+    {
+        public ICreateCommandTemplateCodeGenerator(string filePath, string @namespace, string namespaces, bool update)
+            : base(Path.Combine(filePath, "ICreateCommand"), @namespace, Path.Combine("Commands", "Templates", "ICreateCommandTemplate.txt"), update)
         {
             AddBodyTemplateResolver(Consts.Namespaces, namespaces);
         }

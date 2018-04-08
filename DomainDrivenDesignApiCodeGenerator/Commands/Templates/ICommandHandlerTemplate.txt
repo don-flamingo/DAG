@@ -1,0 +1,10 @@
+﻿using System.Threading.Tasks;
+${namespaces}
+
+namespace ${namespace}
+{
+    interface ICommandHandler<T> where T : ICommand
+    {
+        Task HandleAsync(T command);
+    }
+}

@@ -10,10 +10,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Commands\Templates\CommandHandlerTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Commands\Templates\CommandsDispatcherTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Commands\Templates\CommandTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Commands\Templates\IAuthenticatedCommandTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Commands\Templates\ICommandDispatcherTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Commands\Templates\ICommandHandlerTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Commands\Templates\ICommandTemplate.txt">

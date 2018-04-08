@@ -37,7 +37,7 @@ ${classBody}
 			_cache.SetDto(${classNameLower}Dto);
 		}
 
-		public async Task UpdateAsync(Guid id, JsonPatchDocument<${className}Dto> jsonPatchUpdateDocument, Guid modifiedBy) 
+		public async Task PartialUpdateAsync(Guid id, JsonPatchDocument<${className}Dto> jsonPatchUpdateDocument, Guid modifiedBy) 
 		{
 			_logger.Info($"Updating ${className}: {id} with document {jsonPatchUpdateDocument} by {modifiedBy} ");
 

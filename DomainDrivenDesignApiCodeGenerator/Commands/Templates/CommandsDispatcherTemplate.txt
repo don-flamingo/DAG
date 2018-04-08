@@ -1,0 +1,60 @@
+﻿using Autofac;
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters;
+using System.Text;
+using System.Threading.Tasks;
+using FluentValidation;
+${namespaces}
+
+namespace ${namespace}
+{
+    public class CommandDispatcher : ICommandDispatcher
+    {
+        private readonly IComponentContext _context;
+        public CommandDispatcher(IComponentContext context)
+        {
+            _context = context;
+        }
+
+        public async Task DispatchAsync<T>(T command) where T : ICommand
+        {
+            if (command == null)
+                throw new Exception("command_is_null");
+
+            await ValidateCommand(command);
+            await HandleCommand(command);
+        }
+
+        private async Task HandleCommand<T>(T command) where T : ICommand
+        {
+            var handler = _context.Resolve<ICommandHandler<T>>();
+            await handler.HandleAsync(command);
+        }
+
+        private async Task ValidateCommand<T>(T command) where T : ICommand
+        {
+            var type = typeof(IValidator<T>);
+
+            if (_context.TryResolve(type, out var validator))
+            {
+                var result = await ((IValidator<T>)validator).ValidateAsync(command);
+
+                if (!result.IsValid)            
+                    throw new Exception("invalid_command {GetErrorsInStringFormat(result)}");
+            }
+        }
+
+        private static string GetErrorsInStringFormat(FluentValidation.Results.ValidationResult result)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var error in result.Errors)
+            {
+                sb.AppendLine($"{error.PropertyName} : {error.ErrorMessage}");
+            }
+
+            return sb.ToString();
+        }
+    }
+}
