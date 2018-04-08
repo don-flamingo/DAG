@@ -219,6 +219,23 @@ namespace DomainDrivenDesignApiCodeGenerator
             var cmmandDispatcher = new CommandDispatcherCodeGenerator(infraCommandsPatch, infraCommandsNamespace, commandDisatcherNamespaces, true);
             cmmandDispatcher.Generate();
 
+            var infraServicesNamespace = $"{infrastrucutreNamespace}.Services";
+            var infraServicesPath = Path.Combine(infrastracturePath, "Services");
+
+            var infraInterfacesServicesNamespace = $"{infraServicesNamespace}.Interfaces";
+            var infraInterfacesServicesPath = Path.Combine(infraServicesPath, "Interfaces");
+            
+
+            var iJwtNamespaces = $"using {dtoNamespace};";
+            var jwtNamespaces = $"using {infraInterfacesServicesNamespace};{Environment.NewLine}" +
+                                $"using {dtoNamespace};{Environment.NewLine}" +
+                                $"using {commonExtensionsNamespace};{Environment.NewLine}" +
+                                $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}";
+
+            new DateTimeExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true).Generate();
+            new IJwtHandlerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, iJwtNamespaces, true ).Generate();
+            new JwtHandlerCodeGenerator(infraServicesPath, infraServicesNamespace, jwtNamespaces, true).Generate();
+
             Console.WriteLine("End.");
 
             Console.ReadLine();

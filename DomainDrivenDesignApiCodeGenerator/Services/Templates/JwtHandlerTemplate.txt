@@ -1,0 +1,137 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using NLog;
+${namespaces}
+
+namespace ${namespace}
+{
+    public class JwtHandler : IJwtHandler
+    {
+        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly IDictionary<UserDto, ISet<JwtDto>> _usersTokens = new Dictionary<UserDto, ISet<JwtDto>>();
+
+        private static readonly object _mainRigiel = new object();
+
+        public JwtDto RefreshAccessTokenSynchronized(Guid userId)
+        {
+            var rigiel = _usersTokens.Keys.SingleOrDefault(x => x.Id == userId);
+
+            if (rigiel != null)
+                lock (rigiel)
+                    return RefreshAccessToken(userId);
+
+           return  RefreshAccessToken(userId);
+        }
+
+        private JwtDto RefreshAccessToken(Guid userId)
+        {
+            _logger.Debug($"Refreshing access token for user: #{userId}");
+
+            var key = _usersTokens.Keys.SingleOrDefault(x => x.Id == userId);
+
+            if (key == null)
+                throw new Exception("unathorized");
+
+            var userTokens = _usersTokens[key];
+
+            var previousToken = userTokens.Where(x => x.User.Id == userId)
+                .OrderByDescending(x => x.Expires)
+                .FirstOrDefault();
+
+            var timestampNow = DateTime.UtcNow.ToTimestamp();
+
+            if (previousToken == null || timestampNow > previousToken.Expires)
+                throw new Exception("unathorized");
+
+            var newToken = CreateToken(previousToken.User);
+            return newToken;
+        }
+
+        public JwtDto CreateToken(UserDto user)
+        {
+            _logger.Debug($"Creating access token for user: #{user.Id}");
+
+            var now = DateTime.UtcNow;
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, now.ToTimestamp().ToString(), ClaimValueTypes.Integer64),
+            };
+
+            //Add multiple roles to claims. User can be Admin and Teacher.
+            Array.ForEach(user.Roles, role => claims.Add(new Claim(ClaimTypes.Role, role)));
+
+            var expires =
+#if !DEBUG
+                now.AddMinutes(JwtSettings.ExpiryMinutes);
+#else
+                now.AddMinutes(1);
+#endif
+
+            var signingCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSettings.Key)),
+                SecurityAlgorithms.HmacSha256);
+
+            var jwt = new JwtSecurityToken(
+                issuer: JwtSettings.Issuer,
+                claims: claims,
+                notBefore: now,
+                expires: expires,
+                signingCredentials: signingCredentials
+            );
+
+            var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var jwtDto = new JwtDto
+            {
+                User = user,
+                Token = token,
+                Expires = expires.ToTimestamp()
+            };
+
+            AddTokenToRefreshTokens(jwtDto);
+
+            return jwtDto;
+        }
+
+        public void AddTokenToRefreshTokens(JwtDto jwtDto)
+        {
+            var rigiel = GetRigielForUser(jwtDto);
+
+            lock (rigiel)
+            {
+                var userTokens = _usersTokens[rigiel];
+
+                userTokens.Clear();
+                userTokens.Add(jwtDto);
+            }
+        }
+
+        private static UserDto GetRigielForUser(JwtDto jwtDto)
+        {
+            var rigiel = _usersTokens.Keys.FirstOrDefault(x => x.Id == jwtDto.User.Id);
+
+            if (rigiel != null) return rigiel;
+
+            lock (_mainRigiel)
+            {
+                rigiel = _usersTokens.Keys.FirstOrDefault(x => x.Id == jwtDto.User.Id);
+
+                if (rigiel != null) return rigiel;
+
+                _usersTokens.Add(jwtDto.User, new HashSet<JwtDto>());
+                rigiel = jwtDto.User;
+            }
+
+            return rigiel;
+        }
+    
+}
+}

@@ -41,7 +41,7 @@ namespace ${namespace}
                 var result = await ((IValidator<T>)validator).ValidateAsync(command);
 
                 if (!result.IsValid)            
-                    throw new Exception("invalid_command {GetErrorsInStringFormat(result)}");
+                    throw new Exception($"invalid_command {GetErrorsInStringFormat(result)}");
             }
         }
 

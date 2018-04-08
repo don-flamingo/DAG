@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+${namespaces}
+
+namespace ${namespace}
+{
+    public interface IJwtHandler
+    {
+        JwtDto CreateToken(UserDto user);
+
+        JwtDto RefreshAccessTokenSynchronized(Guid userId);
+    }
+}
