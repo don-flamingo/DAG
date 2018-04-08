@@ -71,9 +71,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Commands
 
             var className = $"PartialUpdate{model.Name}Command";
             var usedInterfaces = $": IPartialUpdateCommand<{model.Name}Dto>";
-            var updateCommandBody  = $"\t\t\tpublic Guid Id {{ get; set; }}\n" +
-                $"\t\t\tpublic JsonPatchDocument<{model.Name}Dto> JsonPatchUpdate {{ get; set; }}\n" +
-                "\t\t\tpublic Guid UserId { get; set; }";
+            var updateCommandBody  = $"\t\tpublic Guid Id {{ get; set; }}\n" +
+                $"\t\tpublic JsonPatchDocument<{model.Name}Dto> JsonPatchUpdate {{ get; set; }}\n" +
+                "\t\tpublic Guid UserId { get; set; }";
 
             var folderName = model.Name;
             var body = GetCommandTemplateBody()

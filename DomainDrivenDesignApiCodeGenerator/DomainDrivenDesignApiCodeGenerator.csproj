@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Marvin.JsonPatch.NetStandard" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Commands\Templates\CommandTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
