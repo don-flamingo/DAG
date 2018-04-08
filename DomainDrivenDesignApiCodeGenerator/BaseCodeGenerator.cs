@@ -35,6 +35,10 @@ namespace DomainDrivenDesignApiCodeGenerator
             if (File.Exists(path) && !update)
                 return;
 
+            var dir = Path.GetDirectoryName(path);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
             File.WriteAllText(path, body);
             Console.WriteLine($"{path} created");
         }

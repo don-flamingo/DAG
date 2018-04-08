@@ -8,9 +8,9 @@ using DomainDrivenDesignApiCodeGenerator.Extensions;
 using DomainDrivenDesignApiCodeGenerator.Helpers;
 using DomainDrivenDesignApiCodeGenerator.Repositories;
 
-namespace DomainDrivenDesignApiCodeGenerator.Services
+namespace DomainDrivenDesignApiCodeGenerator
 {
-    public abstract class BaseDomainServicesCodeGenerator : BaseClassesFromModelsCodeGenerator
+    public abstract class BaseClassesFromModelsAndDtosCodeGenerator : BaseClassesFromModelsCodeGenerator
     {
         public const string AllTypes = "$All";
 
@@ -20,7 +20,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
 
         private readonly IDictionary<string, IList<string>> _ignoredProps;
 
-        public BaseDomainServicesCodeGenerator(string assemblyDtoPath, string assemblyPath, string usingNamespaces,
+        public BaseClassesFromModelsAndDtosCodeGenerator(string assemblyDtoPath, string assemblyPath, string usingNamespaces,
             string modelsNamepace, string generateClassesNamespace, string classDirectoryPath, string dtoNamespace,
             IList<string> ignoredNamespaces, bool update, string templatePath, string classNameTemplate )
             : base(modelsNamepace, generateClassesNamespace, classDirectoryPath, update, assemblyPath, usingNamespaces,

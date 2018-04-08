@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using NLog;
-using Microsoft.AspNetCore.JsonPatch;
+using Marvin.JsonPatch;
 using Microsoft.Extensions.Caching.Memory;
 ${namespaces}
 

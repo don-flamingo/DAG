@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Marvin.JsonPatch;
+${namespaces}
+
+namespace ${namespace}
+{
+    public interface IPartialUpdateCommand<TModel> : IAuthenticatedCommand where TModel : class, IDto
+    {
+        Guid Id { get; set; }
+
+        JsonPatchDocument<TModel> JsonPatchUpdate { get; set; }
+    }
+}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Threading;
+using DomainDrivenDesignApiCodeGenerator.Commands;
 using DomainDrivenDesignApiCodeGenerator.Dtos;
 using DomainDrivenDesignApiCodeGenerator.Interfaces;
 using DomainDrivenDesignApiCodeGenerator.Others;
@@ -187,6 +188,14 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             var objExtensionCodeGenerator = new ObjectExtensionsCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true);
             objExtensionCodeGenerator.Generate();
+
+            var commandsNamespace = $"{CommonNamespace}.Commands";
+            var commandsCodePath = Path.Combine(CommonCodePath, "Commands");
+            var commandsNamespaces = "";
+
+            var commandCodeGenerator = new CommandsCodeGenerator(dtoAssembly, assembly, commandsNamespaces, modelsNamespace, commandsNamespace, commandsCodePath, dtoNamespace, ignoredServiceNamespaces, true);
+            commandCodeGenerator.AddIgnoredProps(ignoredProps);
+            commandCodeGenerator.Generate();
 
             Console.WriteLine("End.");
 

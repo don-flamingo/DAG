@@ -10,7 +10,7 @@ using DomainDrivenDesignApiCodeGenerator.Repositories;
 
 namespace DomainDrivenDesignApiCodeGenerator.Services
 {
-    public class InterfacesServicesCodeGenerator : BaseDomainServicesCodeGenerator
+    public class InterfacesServicesCodeGenerator : BaseClassesFromModelsAndDtosCodeGenerator
     {
         public const string AllTypes = "$All";
 

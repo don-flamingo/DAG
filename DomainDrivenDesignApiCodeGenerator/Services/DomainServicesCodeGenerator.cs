@@ -9,7 +9,7 @@ using DomainDrivenDesignApiCodeGenerator.Helpers;
 
 namespace DomainDrivenDesignApiCodeGenerator.Services
 {
-    public class DomainServicesCodeGenerator : BaseDomainServicesCodeGenerator
+    public class DomainServicesCodeGenerator : BaseClassesFromModelsAndDtosCodeGenerator
     {
         public DomainServicesCodeGenerator(string assemblyDtoPath, string assemblyPath, string usingNamespaces,
             string modelsNamepace, string generateClassesNamespace, string classDirectoryPath, string dtoNamespace,

@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+${namespaces}
+
+namespace ${namespace}
+{
+    public partial class ${className} ${interfaces}
+    {
+${body}
+    }
+}
