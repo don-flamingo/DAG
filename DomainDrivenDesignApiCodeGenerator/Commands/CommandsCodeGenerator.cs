@@ -58,7 +58,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Commands
                              $"using {_dtoNamespace};";
 
             var body = GetCommandTemplateBody()
-                .Replace(Consts.Classname, className)
+                .Replace(Consts.ClassName, className)
                 .Replace(Consts.Namespace, $"{_generateClassesNamespace}.{model.Name}")
                 .Replace(Consts.Body, sbCommandBody.ToString())
                 .Replace(Consts.Interfaces, $": ICreateCommand<{model.Name}Dto>")
@@ -81,7 +81,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Commands
             var folderName = model.Name;
             var body = GetCommandTemplateBody()
                 .Replace(Consts.Namespace, $"{_generateClassesNamespace}.{model.Name}")
-                .Replace(Consts.Classname, className)
+                .Replace(Consts.ClassName, className)
                 .Replace(Consts.Interfaces, usedInterfaces)
                 .Replace(Consts.Body, updateCommandBody)
                 .Replace(Consts.Namespaces, namespaces);

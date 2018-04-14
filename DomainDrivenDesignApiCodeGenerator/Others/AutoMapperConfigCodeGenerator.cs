@@ -27,7 +27,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Others
 
             foreach (var model in models)
             {
-                sb.Append(lineTemplate.Replace(Consts.Classname, model.Name) + Environment.NewLine);
+                sb.Append(lineTemplate.Replace(Consts.ClassName, model.Name) + Environment.NewLine);
             }
 
             var body = configTemplate.Replace(Consts.Namespaces, _namespaces)

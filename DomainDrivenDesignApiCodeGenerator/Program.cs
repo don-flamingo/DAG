@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection.Metadata;
 using System.Threading;
 using DomainDrivenDesignApiCodeGenerator.Commands;
+using DomainDrivenDesignApiCodeGenerator.Controllers;
 using DomainDrivenDesignApiCodeGenerator.Dtos;
 using DomainDrivenDesignApiCodeGenerator.Interfaces;
 using DomainDrivenDesignApiCodeGenerator.IoC;
@@ -33,6 +34,9 @@ namespace DomainDrivenDesignApiCodeGenerator
             var infrastractureExtensionsPath = Path.Combine(infrastracturePath, "Extensions");
             var infrastrucutreSettingsNamespace = $"{infrastrucutreNamespace}.Settings";
             var infrastrucutreSettingsPath = Path.Combine(infrastracturePath, "Settings");
+
+            var apiNamespace = $"{projectName}.Server.Api";
+            var apiPath = Path.Combine(mainCodePath, $"{projectName}.Server", apiNamespace);
 
             var dtoNamespace = "Gymmer.Common.Dtos";
             var modelsNamespace = "Gymmer.Server.Core.Models";
@@ -272,6 +276,16 @@ namespace DomainDrivenDesignApiCodeGenerator
             var commonSerializersPath = Path.Combine(CommonCodePath, "Serializers");
             var commonSerializersNamespace = $"{CommonNamespace}.Serializers";
 
+            var apiControllersNamepace = $"{apiNamespace}.Controllers";
+            var apiControllersPath = Path.Combine(apiPath, "Controllers");
+            var apiControllersNamepaces = $"using {pageQueryNamesapce};{Environment.NewLine}" +
+                                          $"using {commonCommandsNamespace};{Environment.NewLine}" +
+                                          $"using {dtoNamespace};{Environment.NewLine}" +
+                                          $"using {domainServiceNamespace}.Interfaces;{Environment.NewLine}" +
+                                          $"using {infraCommandsNamespace};{Environment.NewLine}" +
+                                          $"using {infrastrucutreExtensionsNamespace};";
+            
+
             new DateTimeExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true).Generate();
             new IJwtHandlerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, iJwtNamespaces, true ).Generate();
             new JwtHandlerCodeGenerator(infraServicesPath, infraServicesNamespace, jwtNamespaces, true).Generate();
@@ -290,6 +304,8 @@ namespace DomainDrivenDesignApiCodeGenerator
             new SqlSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true).Generate();
             new SettingsExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, true).Generate();
             new CustomJsonSerializerCodeGenerator(commonSerializersPath, commonSerializersNamespace, projectName, true).Generate();
+
+            new ControllersCodeGenerator(modelsNamespace, apiControllersNamepace, apiControllersPath, true, assembly, apiControllersNamepaces, commonCommandsNamespace).Generate();
 
             Console.WriteLine("End.");
             Console.ReadLine();

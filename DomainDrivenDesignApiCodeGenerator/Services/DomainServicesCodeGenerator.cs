@@ -48,7 +48,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
             sbLoggedParams = sbLoggedParams.Remove(sbLoggedParams.Length - 1, 1); // remove last " "
 
             return template
-                .Replace(Consts.Classname, model.Name)
+                .Replace(Consts.ClassName, model.Name)
                 .Replace(Consts.CreateMethodParamsLogged, sbLoggedParams.ToString())
                 .Replace(Consts.ClassNameToLower, model.Name.FirstLetterToLower())
                 .Replace(Consts.ClassBody, sbEntityCtr.ToString())

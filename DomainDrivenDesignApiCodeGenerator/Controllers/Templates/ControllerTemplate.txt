@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Marvin.JsonPatch;
+using Microsoft.Extensions.Caching.Memory;
+${namespaces}
+${aNamespaces}
+
+namespace ${namespace}
+{
+    public partial class ${plurarClassName}Controller : BaseApiController
+    {
+		private readonly I${className}Service _${classNameLower}Service;
+      
+        public ${plurarClassName}Controller(I${className}Service ${classNameLower}Service, ICommandDispatcher commandDispatcher, IMemoryCache memoryCache)
+            : base(commandDispatcher, memoryCache)
+        {
+            _${classNameLower}Service = ${classNameLower}Service;
+        }
+
+		[HttpPost]
+        public async Task<IActionResult> CreateAsync([FromBody]Create${className}Command command)
+        {
+            await DispatchAsync(command);
+			var created = _memoryCache.GetDto<${className}Dto>(command.Id);
+            return Created($"${plurarClassNameToLower}/{command.Id}", created);
+        }
+
+		[HttpPatch("{id}")]
+        public async Task<IActionResult> PartialUpdateAsync([FromBody] JsonPatchDocument<${className}Dto> jsonPatch, Guid id)
+        {
+            var partialUpdateCommand = new PartialUpdate${className}Command
+            {
+                Id = id,
+                JsonPatchUpdate = jsonPatch
+            };
+
+            await DispatchAsync(partialUpdateCommand);
+            var patched = _memoryCache.GetPatchResult<${className}Dto>(partialUpdateCommand.Id);
+            return Json(patched);
+        }
+
+		[HttpGet("{id}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var gradeDto = await _${classNameLower}Service.GetAsync(id);
+            return Json(gradeDto);
+        }
+
+		[HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] PageQuery pageQuery)
+        {
+            var grades = await _${classNameLower}Service.GetListAsync(pageQuery);
+            return Json(grades);
+        }
+
+		
+    }
+}

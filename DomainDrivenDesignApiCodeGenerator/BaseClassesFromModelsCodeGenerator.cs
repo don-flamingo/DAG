@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Humanizer;
 
 namespace DomainDrivenDesignApiCodeGenerator.Repositories
 {
@@ -13,6 +14,8 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
         protected readonly string _templatePath;
         protected readonly string _classNameTemplate;
         protected readonly bool _update;
+
+        protected bool _classNamesArePlurar;
 
         protected BaseClassesFromModelsCodeGenerator(string modelsNamepace, string generateClassesNamespace,
             string classDirectoryPath, bool update, string assemblyPath,
@@ -38,6 +41,9 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
                 var name = string.Format(_classNameTemplate, model.Name);
                 var body = GetClassBody(template, model);
 
+                if (_classNamesArePlurar)
+                    name = string.Format(_classNameTemplate, model.Name.Pluralize());
+
                 CreateClass(Path.Combine(_classDirectoryPath, name), body, _update);
             }
         }
@@ -57,7 +63,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Repositories
                 .Replace(Consts.ModelsNamespace, _modelsNamepace);
 
             if(model != null)
-                body = body.Replace(Consts.Classname, model.Name);
+                body = body.Replace(Consts.ClassName, model.Name);
 
             return body;
         }

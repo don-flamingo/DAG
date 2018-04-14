@@ -118,7 +118,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
         {
             var interfaceTemplate = File.ReadAllText(@"Interfaces\InterfaceTemplate.txt");
             var interfacePath = Path.Combine(interfacesDirectory, $"{_markerInterface}.g.cs");
-            var body = interfaceTemplate.Replace(Consts.Classname, _markerInterface)
+            var body = interfaceTemplate.Replace(Consts.ClassName, _markerInterface)
                 .Replace(Consts.Namespace, _interfacesNamespace)
                 .Replace(Consts.Body, "");
 
@@ -134,7 +134,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
             var propertyCode = $"{property.GetPropertyTypeName()} {property.Name} {{ get; set; }}";
             var interfaceTemplate = File.ReadAllText(@"Interfaces\InterfaceTemplate.txt");
 
-            return interfaceTemplate.Replace(Consts.Classname, interfaceName)
+            return interfaceTemplate.Replace(Consts.ClassName, interfaceName)
                 .Replace(Consts.Namespace, _interfacesNamespace)
                 .Replace(Consts.Body, propertyCode);
         }
@@ -152,7 +152,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
                 var interfacesStringBuilder = GetInterfaces(propertiesForInterfaces, model);
                 var path = Path.Combine(extensionDirectory, $"{model.Name}.g.cs");
                 var modelExtensionBody = File.ReadAllText(@"Interfaces\ModelExtensionTemplate.txt")
-                    .Replace(Consts.Classname, model.Name)
+                    .Replace(Consts.ClassName, model.Name)
                     .Replace(Consts.Namespace, _namespace)
                     .Replace(Consts.Interfaces, interfacesStringBuilder.ToString());
 

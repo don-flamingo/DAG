@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using NLog;
+${namespaces}
+
+namespace ${namespace}
+{
+    [Route("api/[controller]")]
+    public abstract class BaseApiController : Controller
+    {
+        private readonly ICommandDispatcher _commandDispatcher;
+        protected readonly IMemoryCache _memoryCache;
+        protected readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
+        protected Guid UserId => User?.Identity?.IsAuthenticated == true?
+            Guid.Parse(User.Identity.Name) :
+            Guid.Empty;
+
+        protected BaseApiController(ICommandDispatcher commandDispatcher, IMemoryCache memoryCache)
+        {
+            _commandDispatcher = commandDispatcher;
+            _memoryCache = memoryCache;
+        }
+
+        protected async Task DispatchAsync<T>(T command) where T : ICommand
+        {
+            if (command is IAuthenticatedCommand authenticatedCommand)
+            {
+                if (UserId.Equals(Guid.Empty))
+                    throw new Exception();
+
+                authenticatedCommand.RequestBy = UserId;
+            }
+
+            await _commandDispatcher.DispatchAsync(command);
+        }
+    }
+}

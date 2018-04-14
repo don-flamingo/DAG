@@ -33,7 +33,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Dtos
                     propertyStringBuilder.AppendLine(propertyField);
                 }
 
-                var dto = dtoTemplate.Replace(Consts.Classname, dtoName)
+                var dto = dtoTemplate.Replace(Consts.ClassName, dtoName)
                     .Replace(Consts.Namespace, _dtoNamespace)
                     .Replace(Consts.Body, propertyStringBuilder.ToString());
 

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="Marvin.JsonPatch.NetStandard" Version="1.0.0" />
   </ItemGroup>
 
@@ -35,6 +36,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Commands\Templates\IPartialUpdateCommandTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Controllers\Templates\BaseControllerTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Controllers\Templates\ControllerTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Dtos\DtoInterfacesTemplate.txt">
