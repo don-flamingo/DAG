@@ -1,0 +1,40 @@
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+namespace ${namespace}
+{
+    public static class ${appName}JsonConverter
+    {
+        public static IContractResolver CamelCaseContractResolver
+            => new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy(),
+                IgnoreSerializableAttribute = true,
+                IgnoreSerializableInterface = true,
+                SerializeCompilerGeneratedMembers = true,
+            };
+
+        public static string Serialize(object o)
+            => JsonConvert.SerializeObject(o, GetDefaultJsonSerializerSettings());
+
+        public static T Deserialize<T>(string json)
+            => JsonConvert.DeserializeObject<T>(json, GetDefaultJsonSerializerSettings());
+
+        public static JsonSerializerSettings GetDefaultJsonSerializerSettings()
+        {
+            var contractResolver = CamelCaseContractResolver;
+
+            var jsonSerializer = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented,
+                TypeNameHandling = TypeNameHandling.None,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+            };
+
+            return jsonSerializer;
+        }
+
+    }
+}

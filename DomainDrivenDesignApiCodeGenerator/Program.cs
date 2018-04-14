@@ -269,6 +269,9 @@ namespace DomainDrivenDesignApiCodeGenerator
             var settingModuleNamespaces = $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}" +
                                           $"using {infrastrucutreExtensionsNamespace};{Environment.NewLine}";
 
+            var commonSerializersPath = Path.Combine(CommonCodePath, "Serializers");
+            var commonSerializersNamespace = $"{CommonNamespace}.Serializers";
+
             new DateTimeExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true).Generate();
             new IJwtHandlerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, iJwtNamespaces, true ).Generate();
             new JwtHandlerCodeGenerator(infraServicesPath, infraServicesNamespace, jwtNamespaces, true).Generate();
@@ -286,6 +289,7 @@ namespace DomainDrivenDesignApiCodeGenerator
             new ServiceModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, servicesModuleNamespaces, context, true).Generate();
             new SqlSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true).Generate();
             new SettingsExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, true).Generate();
+            new CustomJsonSerializerCodeGenerator(commonSerializersPath, commonSerializersNamespace, projectName, true).Generate();
 
             Console.WriteLine("End.");
             Console.ReadLine();

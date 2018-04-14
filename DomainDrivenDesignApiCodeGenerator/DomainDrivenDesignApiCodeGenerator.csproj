@@ -79,6 +79,9 @@
     <None Update="Others\Templates\CacheExtensionHelper.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Others\Templates\CustomJsonSerializerTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Others\Templates\DateTimeExtension.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

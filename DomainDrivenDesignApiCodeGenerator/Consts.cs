@@ -2,6 +2,7 @@
 {
     public static class Consts
     {
+        public const string AppName = "${appName}";
         public const string Namespace = "${namespace}";
         public const string Body = "${body}";
         public const string Interfaces = "${interfaces}";
