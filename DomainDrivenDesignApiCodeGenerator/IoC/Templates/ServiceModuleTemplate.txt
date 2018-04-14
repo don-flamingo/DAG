@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using Autofac;
+using NLog;
+${namespaces}
+
+namespace ${namespace}
+{
+    public class ServiceModule : Autofac.Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+            var assembly = typeof(ServiceModule)
+                .GetTypeInfo()
+                .Assembly;
+
+            builder.RegisterAssemblyTypes(assembly)
+                .Where(x => x.IsAssignableTo<IDomainService>())
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<Encrypter>()
+                .As<IEncrypter>()                                                       
+                .SingleInstance();
+
+            builder.RegisterType<JwtHandler>()
+                .As<IJwtHandler>()
+                .SingleInstance();
+
+            builder.RegisterType<Mailer>()
+                .As<IMailer>()
+                .SingleInstance();
+
+            builder.RegisterType<${EFContext}>()
+                .AsSelf();
+
+        }
+    }
+}

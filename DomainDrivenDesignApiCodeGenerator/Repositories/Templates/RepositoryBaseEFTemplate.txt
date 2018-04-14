@@ -101,4 +101,8 @@ namespace ${namespace}
             }
         }
     }
+
+	public interface IEfRepository
+	{
+	}
 }

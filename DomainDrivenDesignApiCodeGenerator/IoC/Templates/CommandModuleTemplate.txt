@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using Autofac;
+${namespaces}
+
+namespace ${namespace}
+{
+    public class CommandModule : Autofac.Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+            var assembly = typeof(CommandModule)
+                .GetTypeInfo()
+                .Assembly;
+
+            builder.RegisterAssemblyTypes(assembly)
+                .AsClosedTypesOf(typeof(ICommandHandler<>))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<CommandDispatcher>()
+                .As<ICommandDispatcher>()
+                .InstancePerLifetimeScope();
+
+            var libraryAssembly = typeof(ICommand)
+                .GetTypeInfo()
+                .Assembly;
+
+            builder.RegisterAssemblyTypes(libraryAssembly)
+                .Where(x => x.IsAssignableTo<ICommand>())
+                .AsImplementedInterfaces();
+
+        }
+    }
+}

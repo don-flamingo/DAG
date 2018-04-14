@@ -11,7 +11,7 @@ ${namespaces}
 
 namespace ${namespace}
 {
-    public partial class ${className}Repository : BaseEfRepository<${className}>, I${className}Repository
+    public partial class ${className}Repository : BaseEfRepository<${className}>, I${className}Repository, IEfRepository
     {
 		public ${className}Repository (IComponentContext context) : base(context) 
 		{

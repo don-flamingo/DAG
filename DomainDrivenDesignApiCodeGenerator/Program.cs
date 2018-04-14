@@ -6,6 +6,7 @@ using System.Threading;
 using DomainDrivenDesignApiCodeGenerator.Commands;
 using DomainDrivenDesignApiCodeGenerator.Dtos;
 using DomainDrivenDesignApiCodeGenerator.Interfaces;
+using DomainDrivenDesignApiCodeGenerator.IoC;
 using DomainDrivenDesignApiCodeGenerator.Others;
 using DomainDrivenDesignApiCodeGenerator.Repositories;
 using DomainDrivenDesignApiCodeGenerator.Services;
@@ -57,7 +58,8 @@ namespace DomainDrivenDesignApiCodeGenerator
             var efRepoNamespaces = $"using Gymmer.Server.Core.Common; {Environment.NewLine}" +
                                    $"using Gymmer.Server.Core.Models; {Environment.NewLine}" +
                                    $"using Gymmer.Server.Core.Models.Interfaces; {Environment.NewLine}" +
-                                   $"using Gymmer.Server.Core.Repositories; {Environment.NewLine}";
+                                   $"using Gymmer.Server.Core.Repositories; {Environment.NewLine}" +
+                                   $"using {infrastrucutreNamespace}.Sql;";
 
             var mapperPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Mappers\AutoMapperConfig";
             var mapperMamespace = "Gymmer.Server.Infrastructure.Mappers";
@@ -182,39 +184,39 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             var domainServicesCodeGenerator = new DomainServicesCodeGenerator(commonAssembly, assembly,
                 domainServicesNamespaces, modelsNamespace, domainServiceNamespace,
-                domainServicesPath, dtoNamespace, ignoredServiceNamespaces, true);
+                domainServicesPath, dtoNamespace, ignoredServiceNamespaces, false);
             domainServicesCodeGenerator.AddIgnoredProps(ignoredProps);
             domainServicesCodeGenerator.Generate();
 
             var objExtensionCodeGenerator = new ObjectExtensionsCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true);
             objExtensionCodeGenerator.Generate();
 
-            var commandsNamespace = $"{CommonNamespace}.Commands";
+            var commonCommandsNamespace = $"{CommonNamespace}.Commands";
             var commandsCodePath = Path.Combine(CommonCodePath, "Commands");
             var commandsNamespaces = "";
 
-            var commandCodeGenerator = new CommandsCodeGenerator(commonAssembly, assembly, commandsNamespaces, modelsNamespace, commandsNamespace, commandsCodePath, dtoNamespace, ignoredServiceNamespaces, true);
+            var commandCodeGenerator = new CommandsCodeGenerator(commonAssembly, assembly, commandsNamespaces, modelsNamespace, commonCommandsNamespace, commandsCodePath, dtoNamespace, ignoredServiceNamespaces, true);
             commandCodeGenerator.AddIgnoredProps(ignoredProps);
             commandCodeGenerator.Generate();
 
             var infraCommandsNamespace = $"{infrastrucutreNamespace}.Commands";
             var infraCommandsPatch = Path.Combine(infrastracturePath, "Commands");
 
-            var commandsHandlersNamespace = $"{infraCommandsNamespace}.Handlers";
+            var infraCommandsHandlersNamespace = $"{infraCommandsNamespace}.Handlers";
             var commandsHandlerPatch = Path.Combine(infraCommandsPatch, "Handlers");
             var commandsHandlerNamespaces = $"using {domainServiceNamespace}.Interfaces;";
 
-            var commandsHandlersGenerator = new CommandsHandlersCodeGenerator(commandsNamespace, commandsHandlersNamespace, commandsHandlerPatch, true,
+            var commandsHandlersGenerator = new CommandsHandlersCodeGenerator(commonCommandsNamespace, infraCommandsHandlersNamespace, commandsHandlerPatch, true,
                 commonAssembly, commandsHandlerNamespaces, modelsNamespace, assembly);
             commandsHandlersGenerator.Generate();
 
-            var iCommandDispatcherNamespaces = $"using {commandsNamespace};{Environment.NewLine}";
+            var iCommandDispatcherNamespaces = $"using {commonCommandsNamespace};{Environment.NewLine}";
 
             var iCommandDispatcher = new ICommandDispatcherCodeGenerator(infraCommandsPatch, infraCommandsNamespace, iCommandDispatcherNamespaces, true);
             iCommandDispatcher.Generate();
 
-            var commandDisatcherNamespaces = $"using {commandsNamespace};{Environment.NewLine}" +
-                                             $"using {commandsHandlersNamespace};";
+            var commandDisatcherNamespaces = $"using {commonCommandsNamespace};{Environment.NewLine}" +
+                                             $"using {infraCommandsHandlersNamespace};";
 
             var cmmandDispatcher = new CommandDispatcherCodeGenerator(infraCommandsPatch, infraCommandsNamespace, commandDisatcherNamespaces, true);
             cmmandDispatcher.Generate();
@@ -241,6 +243,32 @@ namespace DomainDrivenDesignApiCodeGenerator
                 $"using {infraInterfacesServicesNamespace};{Environment.NewLine}" +
                 $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}";
 
+            var infraIoCPath = Path.Combine(infrastracturePath, "IoC");
+            var infraIoCNamespace = $"{infrastrucutreNamespace}.IoC";
+            var infraIoCModulesPath = Path.Combine(infraIoCPath, "Modules");
+            var infraIoCModulesNamespace = $"{infraIoCNamespace}.Modules";
+            var infraSqlNamespace = $"{infrastrucutreNamespace}.Sql";
+
+            var commandsModuleNamespaces = $"using {commonCommandsNamespace};{Environment.NewLine}" +
+                                           $"using {infraCommandsNamespace};{Environment.NewLine}" +
+                                           $"using {infraCommandsHandlersNamespace};";
+
+            var containerModuleNamespaces = $"using {infraIoCModulesNamespace};{Environment.NewLine}" +
+                                            $"using {mapperMamespace};{Environment.NewLine}" +
+                                            $"using {infrastrucutreExtensionsNamespace};{Environment.NewLine}";
+
+            var repositoryModuleNamespaces = $"using {repositoryNamespace};{Environment.NewLine}" +
+                                             $"using {entityCommonRepositoryNamespace};{Environment.NewLine}";
+
+            var servicesModuleNamespaces = $"using {infraServicesNamespace};{Environment.NewLine}" +
+                                           $"using {infraServicesNamespace}.Interfaces;{Environment.NewLine}" +
+                                           $"using {domainServiceNamespace};{Environment.NewLine}" +
+                                           $"using {domainServiceNamespace}.Interfaces;{Environment.NewLine}" +
+                                           $"using {infraSqlNamespace};";
+
+            var settingModuleNamespaces = $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}" +
+                                          $"using {infrastrucutreExtensionsNamespace};{Environment.NewLine}";
+
             new DateTimeExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true).Generate();
             new IJwtHandlerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, iJwtNamespaces, true ).Generate();
             new JwtHandlerCodeGenerator(infraServicesPath, infraServicesNamespace, jwtNamespaces, true).Generate();
@@ -250,6 +278,14 @@ namespace DomainDrivenDesignApiCodeGenerator
             new EmailSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true).Generate();
             new MailerCodeGenerator(infraServicesPath, infraServicesNamespace, mailerNamespaces, true).Generate();
             new IMailerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, imailerNamespaces, true).Generate();
+
+            new CommandModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, commandsModuleNamespaces, true).Generate();
+            new ContainerModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, containerModuleNamespaces, true).Generate();
+            new RepositoryModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, repositoryModuleNamespaces, true).Generate();
+            new SettingModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, settingModuleNamespaces, true).Generate();
+            new ServiceModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, servicesModuleNamespaces, context, true).Generate();
+            new SqlSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true).Generate();
+            new SettingsExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, true).Generate();
 
             Console.WriteLine("End.");
             Console.ReadLine();
