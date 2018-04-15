@@ -1,0 +1,109 @@
+﻿using System;
+using System.Text;
+using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using NLog.Extensions.Logging;
+using NLog.Web;
+${namespaces}
+
+namespace ${namespace}
+{
+    public class Startup
+    {
+        public IConfigurationRoot Configuration { get; }
+
+        public IContainer ApplicationContainer { get; private set; }
+
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
+        }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public IServiceProvider ConfigureServices(IServiceCollection services)
+        {
+            // Add framework services.
+            services.AddMemoryCache();
+            services.AddEntityFrameworkSqlServer()
+                .AddEntityFrameworkInMemoryDatabase()
+                .AddDbContext<${EFContext}>();
+
+            services.AddCors();
+
+            ConfigureJsonFormat(services);
+
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            builder.RegisterModule(new ContainerModule(Configuration));
+            ApplicationContainer = builder.Build();
+
+            return new AutofacServiceProvider(ApplicationContainer);
+        }
+
+        private static void ConfigureJsonFormat(IServiceCollection services)
+        {
+            services.AddMvc()
+                .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
+                .AddJsonOptions(x => x.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects)
+                .AddJsonOptions(x => x.SerializerSettings.Formatting = Formatting.Indented)
+                .AddJsonOptions(x => x.SerializerSettings.ContractResolver = ${appName}JsonConverter.CamelCaseContractResolver)
+                .AddJsonOptions(x => x.SerializerSettings.TypeNameHandling = TypeNameHandling.None);
+
+            services.AddAuthentication(o => o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(o =>
+                {
+                    o.SaveToken = true;
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = JwtSettings.Issuer,
+                        ValidateAudience = false,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSettings.Key)),
+                    };
+                });
+
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifeTime)
+        {
+            loggerFactory.AddNLog();
+            app.AddNLogWeb();
+            env.ConfigureNLog("nlog.config");
+
+            app.UseAuthentication();
+            app.UseCors(builder =>
+                builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+
+            if (GeneralSettings.SeedData)
+            {
+                var dt = app.ApplicationServices.GetService<IDataInitializer>();
+#if DEBUG
+                dt.SeedAsync().Wait();
+#endif
+            }
+
+            app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
+            app.UseMvc();
+            appLifeTime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
+        }
+    }
+}

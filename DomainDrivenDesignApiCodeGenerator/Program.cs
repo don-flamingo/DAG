@@ -22,10 +22,18 @@ namespace DomainDrivenDesignApiCodeGenerator
             var mainCodePath = @"D:\Codes\My\Gymmer\src";
             var projectName = "Gymmer";
 
-            var CommonNamespace = "Gymmer.Common";
-            var CommonCodePath = Path.Combine(mainCodePath, CommonNamespace);
-            var commonExtensionsPath = Path.Combine(CommonCodePath, "Extensions");
-            var commonExtensionsNamespace = $"{CommonNamespace}.Extensions";
+            var assembly = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\bin\Debug\netcoreapp2.0\Gymmer.Server.Core.dll";
+            var commonAssembly = @"D:\Codes\My\Gymmer\src\Gymmer.Common\bin\Debug\netstandard2.0\Gymmer.Common.dll";
+
+            var commonNamespace = $"{projectName}.Common";
+            var commonCodePath = Path.Combine(mainCodePath, commonNamespace);
+            var commonExtensionsPath = Path.Combine(commonCodePath, "Extensions");
+            var commonExtensionsNamespace = $"{commonNamespace}.Extensions";
+
+            var serverSolutionPath = Path.Combine(mainCodePath, "Server");
+
+            var coreNamespace = $"{projectName}.Server.Core";
+            var corePath = Path.Combine(serverSolutionPath, coreNamespace);
 
             var infrastrucutreNamespace = $"{projectName}.Server.Infrastructure";
             var infrastracturePath = Path.Combine(mainCodePath, $"{projectName}.Server",
@@ -38,48 +46,50 @@ namespace DomainDrivenDesignApiCodeGenerator
             var apiNamespace = $"{projectName}.Server.Api";
             var apiPath = Path.Combine(mainCodePath, $"{projectName}.Server", apiNamespace);
 
-            var dtoNamespace = "Gymmer.Common.Dtos";
-            var modelsNamespace = "Gymmer.Server.Core.Models";
-            var dtoPath = @"D:\Codes\My\Gymmer\src\Gymmer.Common\Dtos";
-            var modelsPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Models";
-            var assembly =
-                @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\bin\Debug\netcoreapp2.0\Gymmer.Server.Core.dll";
-            var commonAssembly = @"D:\Codes\My\Gymmer\src\Gymmer.Common\bin\Debug\netstandard2.0\Gymmer.Common.dll";
+            var apiModelsPath = Path.Combine(apiPath, "Models");
 
-            var sortFuncPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Common";
-            var sortFuncNamespace = "Gymmer.Server.Core.Common";
 
-            var repositoryNamespace = "Gymmer.Server.Core.Repositories";
-            var repostioryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\Repositories";
-            var interfaceRepositoryNamespaces = $"using Gymmer.Server.Core.Common; {Environment.NewLine}" +
-                                                $"using Gymmer.Server.Core.Models;";
+            var coreCommonNamespace = $"{coreNamespace}.Common";
 
-            var entityCommonRepositoryNamespace = "Gymmer.Server.Infrastructure.Repositories.EF";
-            var efRepositoryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Repositories\EF";
-            var context = "GymmerContext";
+            var dtoNamespace = $"{commonNamespace}.Dtos";
+            var modelsNamespace = $"{coreNamespace}.Models";
+            var dtoPath = Path.Combine(commonCodePath, "Dtos");
+            var modelsPath = Path.Combine(corePath, "Models"); 
+
+            var coreCommonPath = Path.Combine(corePath, "Common");
+
+            var repositoryNamespace = $"{coreNamespace}.Repositories";
+            var repostioryPath = Path.Combine(corePath, "Repositories");
+            var interfaceRepositoryNamespaces = $"using {coreCommonNamespace}; {Environment.NewLine}" +
+                                                $"using {modelsNamespace}";
+
+            var entityCommonRepositoryNamespace = $"{infrastrucutreNamespace}.Repositories.EF";
+            var efRepositoryPath = Path.Combine(infrastracturePath, "Repositories", "EF");
+            var efContext = "GymmerContext";
             var entityMarker = "IGymmerObject";
             var idProvider = "IIdProvider";
-            var efRepoNamespaces = $"using Gymmer.Server.Core.Common; {Environment.NewLine}" +
-                                   $"using Gymmer.Server.Core.Models; {Environment.NewLine}" +
-                                   $"using Gymmer.Server.Core.Models.Interfaces; {Environment.NewLine}" +
-                                   $"using Gymmer.Server.Core.Repositories; {Environment.NewLine}" +
+            var efRepoNamespaces = $"using {coreCommonNamespace}; {Environment.NewLine}" +
+                                   $"using {modelsNamespace}; {Environment.NewLine}" +
+                                   $"using {modelsNamespace}.Interfaces; {Environment.NewLine}" +
+                                   $"using {repositoryNamespace}; {Environment.NewLine}" +
                                    $"using {infrastrucutreNamespace}.Sql;";
 
-            var mapperPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Mappers\AutoMapperConfig";
-            var mapperMamespace = "Gymmer.Server.Infrastructure.Mappers";
+            var sqlNamespace = $"{infrastrucutreNamespace}.Sql";
+
+            var mapperPath = Path.Combine(infrastracturePath, "Mappers", "AutoMapperConfig");
+            var mapperMamespace = $"{infrastrucutreNamespace}.Mappers";
             var mapperNamespaces = $"using {modelsNamespace}; {Environment.NewLine}" +
                                    $"using {dtoNamespace}; {Environment.NewLine}";
 
-            var ipageQueryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Models\Interfaces\IPageQuery";
-            var iPageQueryNamesapce = "Gymmer.Server.Infrastructure.Models.Interface";
+            var ipageQueryPath = Path.Combine(infrastracturePath, "Models", "Interfaces", "IPageQuery");
+            var iPageQueryNamesapce = $"{infrastrucutreNamespace}.Models.Interface";
 
-            var pageQueryPath = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Api\Models\PageQuery";
-            var pageQueryNamesapce = "Gymmer.Server.Api.Models";
-            var pageQueryNamespaces = $"using Gymmer.Server.Infrastructure.Models.Interface;";
+            var pageQueryPath = Path.Combine(apiModelsPath, "PageQuery");
+            var pageQueryNamesapce = $"{apiNamespace}.Models";
+            var pageQueryNamespaces = $"using {iPageQueryNamesapce};";
 
-            var iServiceNamespace = "Gymmer.Server.Infrastructure.Services.Domain.Interfaces";
-            var iServicePath =
-                @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Infrastructure\Services\Domain\Interfaces";
+            var iServiceNamespace = $"{infrastrucutreNamespace}.Services.Domain.Interfaces";
+            var iServicePath = Path.Combine(infrastracturePath, "Services", "Domain", "Interfaces");
             var iServiceNamespaces = $"using {dtoNamespace};{Environment.NewLine}" +
                                     $"using {iPageQueryNamesapce};";
 
@@ -106,14 +116,14 @@ namespace DomainDrivenDesignApiCodeGenerator
                 new InterfacesCodeGenerator(dtoPath, dtoNamespace, commonAssembly, true, 3, "IDto", "Dto", postfix: "Provider");
             dtoInterfaceGenerator.Generate();
 
-            var sortFuncGenerator = new SortFuncCodeGenerator(sortFuncPath, sortFuncNamespace, true);
+            var sortFuncGenerator = new SortFuncCodeGenerator(coreCommonPath, coreCommonNamespace, true);
             sortFuncGenerator.Generate();
 
             var interfaceRepositoryCodeGenerator = new InterfacesRepositoriesCodeGenerator(modelsNamespace,
                 repositoryNamespace, repostioryPath, true, assembly, interfaceRepositoryNamespaces);
             interfaceRepositoryCodeGenerator.Generate();
 
-            var efRepositoryCodeGenerator = new EFRepositoriesCodeGenerator(context, entityMarker, idProvider, modelsNamespace, entityCommonRepositoryNamespace, efRepositoryPath, true, assembly, efRepoNamespaces);
+            var efRepositoryCodeGenerator = new EFRepositoriesCodeGenerator(efContext, entityMarker, idProvider, modelsNamespace, entityCommonRepositoryNamespace, efRepositoryPath, true, assembly, efRepoNamespaces);
             efRepositoryCodeGenerator.Generate();
 
             var mapperCodeGenerator = new AutoMapperConfigCodeGenerator(mapperNamespaces,  modelsNamespace,mapperPath, mapperMamespace, true, assembly);
@@ -130,8 +140,8 @@ namespace DomainDrivenDesignApiCodeGenerator
             serviceCodeGenerator.AddIgnoredProps(ignoredProps);
             serviceCodeGenerator.Generate();
 
-            var libraryWrappers = Path.Combine(CommonCodePath, "Wrappers");
-            var commonWwrappersNamespace = $"{CommonNamespace}.Wrappers";
+            var libraryWrappers = Path.Combine(commonCodePath, "Wrappers");
+            var commonWwrappersNamespace = $"{commonNamespace}.Wrappers";
 
             var pathNamesapces = $"using {dtoNamespace}.Interfaces;";
 
@@ -140,7 +150,7 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             var infrastrucutreHelpersPath = Path.Combine(infrastracturePath, "Helpers");
             var infrastructureHelpersNamespace = $"{infrastrucutreNamespace}.Helpers";
-            var usingNamespaces = $"using {sortFuncNamespace};{Environment.NewLine}" +
+            var usingNamespaces = $"using {coreCommonNamespace};{Environment.NewLine}" +
                                   $"using {iPageQueryNamesapce};{Environment.NewLine}" +
                                   $"using {commonExtensionsNamespace};";
 
@@ -195,8 +205,8 @@ namespace DomainDrivenDesignApiCodeGenerator
             var objExtensionCodeGenerator = new ObjectExtensionsCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true);
             objExtensionCodeGenerator.Generate();
 
-            var commonCommandsNamespace = $"{CommonNamespace}.Commands";
-            var commandsCodePath = Path.Combine(CommonCodePath, "Commands");
+            var commonCommandsNamespace = $"{commonNamespace}.Commands";
+            var commandsCodePath = Path.Combine(commonCodePath, "Commands");
             var commandsNamespaces = "";
 
             var commandCodeGenerator = new CommandsCodeGenerator(commonAssembly, assembly, commandsNamespaces, modelsNamespace, commonCommandsNamespace, commandsCodePath, dtoNamespace, ignoredServiceNamespaces, true);
@@ -273,8 +283,8 @@ namespace DomainDrivenDesignApiCodeGenerator
             var settingModuleNamespaces = $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}" +
                                           $"using {infrastrucutreExtensionsNamespace};{Environment.NewLine}";
 
-            var commonSerializersPath = Path.Combine(CommonCodePath, "Serializers");
-            var commonSerializersNamespace = $"{CommonNamespace}.Serializers";
+            var commonSerializersPath = Path.Combine(commonCodePath, "Serializers");
+            var commonSerializersNamespace = $"{commonNamespace}.Serializers";
 
             var apiControllersNamepace = $"{apiNamespace}.Controllers";
             var apiControllersPath = Path.Combine(apiPath, "Controllers");
@@ -284,6 +294,11 @@ namespace DomainDrivenDesignApiCodeGenerator
                                           $"using {domainServiceNamespace}.Interfaces;{Environment.NewLine}" +
                                           $"using {infraCommandsNamespace};{Environment.NewLine}" +
                                           $"using {infrastrucutreExtensionsNamespace};";
+
+            var apiStartupNamespaces = $"using {commonSerializersNamespace};{Environment.NewLine}" +
+                                       $"using {infraIoCModulesNamespace};{Environment.NewLine}" +
+                                       $"using {sqlNamespace};{Environment.NewLine}" +
+                                       $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}";
             
 
             new DateTimeExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true).Generate();
@@ -300,12 +315,13 @@ namespace DomainDrivenDesignApiCodeGenerator
             new ContainerModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, containerModuleNamespaces, true).Generate();
             new RepositoryModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, repositoryModuleNamespaces, true).Generate();
             new SettingModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, settingModuleNamespaces, true).Generate();
-            new ServiceModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, servicesModuleNamespaces, context, true).Generate();
+            new ServiceModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, servicesModuleNamespaces, efContext, true).Generate();
             new SqlSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true).Generate();
             new SettingsExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, true).Generate();
             new CustomJsonSerializerCodeGenerator(commonSerializersPath, commonSerializersNamespace, projectName, true).Generate();
 
             new ControllersCodeGenerator(modelsNamespace, apiControllersNamepace, apiControllersPath, true, assembly, apiControllersNamepaces, commonCommandsNamespace).Generate();
+            new StartupCodeGenerator(apiPath, apiNamespace, efContext, apiStartupNamespaces, projectName, true).Generate();
 
             Console.WriteLine("End.");
             Console.ReadLine();

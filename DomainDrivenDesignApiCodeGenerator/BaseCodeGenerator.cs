@@ -13,6 +13,8 @@ namespace DomainDrivenDesignApiCodeGenerator
         protected readonly string _assemblyPath;
         protected readonly string _classDirectoryPath;
 
+        protected bool _gExt = true;
+
         protected BaseCodeGenerator(string assemblyPath, string classDirectoryPath)
         {
             _assemblyPath = assemblyPath;
@@ -30,7 +32,9 @@ namespace DomainDrivenDesignApiCodeGenerator
 
         protected void CreateClass(string path, string body, bool update)
         {
-            path = $"{path}.g.cs";
+            path = _gExt ?
+                $"{path}.g.cs" : 
+                $"{path}.cs";
 
             if (File.Exists(path) && !update)
                 return;

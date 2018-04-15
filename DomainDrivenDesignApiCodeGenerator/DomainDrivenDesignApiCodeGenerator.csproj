@@ -116,6 +116,9 @@
     <None Update="Others\Templates\SortFuncTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Others\Templates\StartupTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Others\Templates\StringExtensionTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
