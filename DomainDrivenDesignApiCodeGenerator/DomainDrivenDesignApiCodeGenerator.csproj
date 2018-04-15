@@ -86,10 +86,16 @@
     <None Update="Others\Templates\CacheExtensionHelper.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Others\Templates\CustomExceptionTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Others\Templates\CustomJsonSerializerTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Others\Templates\DateTimeExtension.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Others\Templates\ExceptionHandlerMiddlewareTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Others\Templates\IPageQueryTemplate.txt">
@@ -137,6 +143,9 @@
     <None Update="Services\Templates\BaseDomainServiceCodeGenerator.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Services\Templates\DataInitalizerTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Services\Templates\DomainServicesCodeGenerator.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -144,6 +153,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Services\Templates\EncrypterTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Services\Templates\IDataInitializerTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Services\Templates\IDomainServiceTemplate.txt">

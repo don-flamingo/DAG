@@ -93,14 +93,13 @@ namespace ${namespace}
                     .AllowAnyHeader()
                     .AllowAnyMethod());
 
+#if DEBUG
             if (GeneralSettings.SeedData)
             {
                 var dt = app.ApplicationServices.GetService<IDataInitializer>();
-#if DEBUG
                 dt.SeedAsync().Wait();
-#endif
             }
-
+#endif
             app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
             app.UseMvc();
             appLifeTime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());

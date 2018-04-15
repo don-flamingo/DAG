@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection.Metadata;
-using System.Threading;
-using DomainDrivenDesignApiCodeGenerator.Commands;
+﻿using DomainDrivenDesignApiCodeGenerator.Commands;
 using DomainDrivenDesignApiCodeGenerator.Controllers;
 using DomainDrivenDesignApiCodeGenerator.Dtos;
 using DomainDrivenDesignApiCodeGenerator.Interfaces;
@@ -12,6 +7,9 @@ using DomainDrivenDesignApiCodeGenerator.Others;
 using DomainDrivenDesignApiCodeGenerator.Repositories;
 using DomainDrivenDesignApiCodeGenerator.Services;
 using DomainDrivenDesignApiCodeGenerator.Settings;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace DomainDrivenDesignApiCodeGenerator
 {
@@ -30,7 +28,7 @@ namespace DomainDrivenDesignApiCodeGenerator
             var commonExtensionsPath = Path.Combine(commonCodePath, "Extensions");
             var commonExtensionsNamespace = $"{commonNamespace}.Extensions";
 
-            var serverSolutionPath = Path.Combine(mainCodePath, "Server");
+            var serverSolutionPath = Path.Combine(mainCodePath, $"{projectName}.Server");
 
             var coreNamespace = $"{projectName}.Server.Core";
             var corePath = Path.Combine(serverSolutionPath, coreNamespace);
@@ -257,6 +255,9 @@ namespace DomainDrivenDesignApiCodeGenerator
                 $"using {infraInterfacesServicesNamespace};{Environment.NewLine}" +
                 $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}";
 
+            var infraServiceDataGeneratorPath = Path.Combine(infraServicesPath, "DataGenerators");
+            var infraServiceDataGeneratorNamespace = $"{infraServicesNamespace}.DataGenerators";
+
             var infraIoCPath = Path.Combine(infrastracturePath, "IoC");
             var infraIoCNamespace = $"{infrastrucutreNamespace}.IoC";
             var infraIoCModulesPath = Path.Combine(infraIoCPath, "Modules");
@@ -295,11 +296,20 @@ namespace DomainDrivenDesignApiCodeGenerator
                                           $"using {infraCommandsNamespace};{Environment.NewLine}" +
                                           $"using {infrastrucutreExtensionsNamespace};";
 
-            var apiStartupNamespaces = $"using {commonSerializersNamespace};{Environment.NewLine}" +
+            var commonExceptionPath = Path.Combine(commonCodePath, "Exceptions");
+            var commonExceptionNamespace = $"{commonNamespace}.Exceptions";
+
+            var apiExceptionMiddlewarePath = Path.Combine(apiPath, "Framework");
+            var apiExceptionMiddlewareNamespace = $"{apiNamespace}.Framework";
+            var apiExcpetionMiddlewareNamespaces = $"using {commonExceptionNamespace};{Environment.NewLine}" +
+                                                   $"using {commonSerializersNamespace};{Environment.NewLine}";
+
+            var apiStartupNamespaces = $"using {apiExceptionMiddlewareNamespace};{Environment.NewLine}" +
+                                       $"using {commonSerializersNamespace};{Environment.NewLine}" +
                                        $"using {infraIoCModulesNamespace};{Environment.NewLine}" +
                                        $"using {sqlNamespace};{Environment.NewLine}" +
+                                       $"using {infraServiceDataGeneratorNamespace};{Environment.NewLine}" +
                                        $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}";
-            
 
             new DateTimeExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, true).Generate();
             new IJwtHandlerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, iJwtNamespaces, true ).Generate();
@@ -310,6 +320,8 @@ namespace DomainDrivenDesignApiCodeGenerator
             new EmailSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, true).Generate();
             new MailerCodeGenerator(infraServicesPath, infraServicesNamespace, mailerNamespaces, true).Generate();
             new IMailerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, imailerNamespaces, true).Generate();
+            new DataInitalizerCodeGenerator(infraServiceDataGeneratorPath, infraServiceDataGeneratorNamespace, true).Generate();
+            new IDataInitalizerCodeGenerator(infraServiceDataGeneratorPath, infraServiceDataGeneratorNamespace, true).Generate();
 
             new CommandModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, commandsModuleNamespaces, true).Generate();
             new ContainerModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, containerModuleNamespaces, true).Generate();
@@ -322,6 +334,10 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             new ControllersCodeGenerator(modelsNamespace, apiControllersNamepace, apiControllersPath, true, assembly, apiControllersNamepaces, commonCommandsNamespace).Generate();
             new StartupCodeGenerator(apiPath, apiNamespace, efContext, apiStartupNamespaces, projectName, true).Generate();
+            new CustomExceptionCodeGenerator(commonExceptionPath, commonExceptionNamespace, projectName, true).Generate();
+            new ExceptionHandlerMiddlewareCodeGenerator(apiExceptionMiddlewarePath, apiExceptionMiddlewareNamespace, projectName, apiExcpetionMiddlewareNamespaces, true).Generate();
+            
+
 
             Console.WriteLine("End.");
             Console.ReadLine();

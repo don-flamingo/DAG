@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Mime;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using NLog;
+${namespaces}
+
+namespace ${namespace}
+{
+    public class ExceptionHandlerMiddleware
+    {
+        private readonly static ILogger _logger = LogManager.GetCurrentClassLogger();
+        private readonly RequestDelegate _next;
+
+        public ExceptionHandlerMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+#if !DEBUG
+            try
+            {
+                await _next.Invoke(context);
+            }
+            catch (Exception e)
+            {
+                await HandleExceptionAsync(context, e);
+            }
+#else
+            await _next.Invoke(context);
+#endif
+        }
+
+        public static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            var statusCode = HttpStatusCode.BadRequest;
+            var errorCode = "internal_server_error";
+            var message = exception.Message;
+            var stack = exception.StackTrace;
+
+            switch (exception)
+            {
+                case ${appName}Exception serverException:
+                    errorCode = serverException.ErrorCode;
+                    break;
+                case UnauthorizedAccessException unauthorizedAccessException:
+                    errorCode = ErrorCodes.UnauthorizedAccess;
+                    statusCode = HttpStatusCode.Unauthorized;
+                    break;
+                case InvalidOperationException invalidOperationException:
+                    IfItAspNetCoreAuthException(ref statusCode, ref errorCode, invalidOperationException);
+                    break;
+                default:
+                    _logger.Fatal($"Unexpected exception {exception} with stack: {exception.StackTrace} with source: {exception.Source}");
+                    break;
+            }
+
+            var response = new
+            {
+                ErrorCode = errorCode,
+                Message = message,
+                Stack = stack
+            };
+
+            var payload = ${appName}JsonConverter.Serialize(response);
+
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int) statusCode;
+
+            return context.Response.WriteAsync(payload);
+        }
+
+        private static void IfItAspNetCoreAuthException(ref HttpStatusCode statusCode, ref string errorCode, InvalidOperationException invalidOperationException)
+        {
+            if (invalidOperationException.StackTrace.Contains("AuthenticationService"))
+            {
+                errorCode = ErrorCodes.UnauthorizedAccess;
+                statusCode = HttpStatusCode.Unauthorized;
+            }
+        }
+    }
+}

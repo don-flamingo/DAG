@@ -62,7 +62,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
                 .Generate();
     }
 
-    class BaseDomainServiceCodeGenerator : BaseClassCodeGenerator
+    public class BaseDomainServiceCodeGenerator : BaseClassCodeGenerator
     {
         public BaseDomainServiceCodeGenerator(string filePath, string @namespace ,bool update) :
             base(Path.Combine(filePath, "BaseDomainService"), @namespace, Path.Combine("Services", "Templates", "BaseDomainServiceCodeGenerator.txt"), update)
