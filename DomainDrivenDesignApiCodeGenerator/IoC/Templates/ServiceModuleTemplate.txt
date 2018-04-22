@@ -33,6 +33,10 @@ namespace ${namespace}
                 .As<IMailer>()
                 .SingleInstance();
 
+			builder.RegisterType<DataInitializer>()
+				.As<IDataInitializer>()
+				.SingleInstance();
+
             builder.RegisterType<${EFContext}>()
                 .AsSelf();
 

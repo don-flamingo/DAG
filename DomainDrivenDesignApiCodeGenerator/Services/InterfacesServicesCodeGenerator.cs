@@ -30,7 +30,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Services
         }
 
         protected override void CreateBaseMarker()
-            => new MarkerServiceCodeGenerator(_classDirectoryPath, _generateClassesNamespace, true)
+            => new MarkerServiceCodeGenerator(_classDirectoryPath, _generateClassesNamespace, _update)
                 .Generate();
 
         private class MarkerServiceCodeGenerator : BaseClassCodeGenerator

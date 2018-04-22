@@ -35,7 +35,7 @@ namespace ${namespace}
             var key = _usersTokens.Keys.SingleOrDefault(x => x.Id == userId);
 
             if (key == null)
-                throw new Exception("unathorized");
+                throw new ${appName}Exception(ErrorCodes.UnauthorizedAccess);
 
             var userTokens = _usersTokens[key];
 
@@ -46,7 +46,7 @@ namespace ${namespace}
             var timestampNow = DateTime.UtcNow.ToTimestamp();
 
             if (previousToken == null || timestampNow > previousToken.Expires)
-                throw new Exception("unathorized");
+                throw new ${appName}Exception(ErrorCodes.UnauthorizedAccess);
 
             var newToken = CreateToken(previousToken.User);
             return newToken;

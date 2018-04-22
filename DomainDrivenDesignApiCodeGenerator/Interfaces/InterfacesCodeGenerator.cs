@@ -107,7 +107,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Interfaces
                 _interfacesNameForProperties.Add(property, interfaceName);
 
                 if (File.Exists(interfacePath) && !_update)
-                    return;
+                    continue;
 
                 File.WriteAllText(interfacePath, interfaceBody);
                 Console.WriteLine($"{interfaceName} created");

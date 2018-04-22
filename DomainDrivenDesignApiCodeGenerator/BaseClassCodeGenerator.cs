@@ -34,6 +34,9 @@ namespace DomainDrivenDesignApiCodeGenerator
             var body = CreateBody(template, _templateValues);
             var path = _filePath;
 
+            if(!_update)
+                return;
+
             if(_gExt)
                 if (!path.EndsWith(".g.cs"))
                     path = $"{path}.g.cs";

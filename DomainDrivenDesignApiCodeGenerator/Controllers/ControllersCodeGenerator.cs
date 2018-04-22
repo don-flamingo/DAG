@@ -16,7 +16,7 @@ namespace DomainDrivenDesignApiCodeGenerator.Controllers
             assemblyPath, usingNamespaces, Path.Combine("Controllers", "Templates", "ControllerTemplate.txt"), "{0}Controller")
         {
                 _commandsNamespace = commandsNamespace;
-            _classNamesArePlurar = true;
+            _classNamesArePlurar = update;
         }
 
         protected override string GetClassBody(string template, Type model)

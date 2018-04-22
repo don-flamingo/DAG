@@ -46,15 +46,15 @@ namespace ${namespace}
 		[HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var gradeDto = await _${classNameLower}Service.GetAsync(id);
-            return Json(gradeDto);
+            var ${classNameLower} = await _${classNameLower}Service.GetAsync(id);
+            return Json(${classNameLower});
         }
 
 		[HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] PageQuery pageQuery)
         {
-            var grades = await _${classNameLower}Service.GetListAsync(pageQuery);
-            return Json(grades);
+            var ${plurarClassNameToLower} = await _${classNameLower}Service.GetListAsync(pageQuery);
+            return Json(${plurarClassNameToLower});
         }
 
 		
