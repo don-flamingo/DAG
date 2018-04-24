@@ -5,10 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
-using DomainDrivenDesignApiCodeGenerator.Helpers;
-using DomainDrivenDesignApiCodeGenerator.Repositories;
+using DAG;
+using DAG.Helpers;
+using DAG.Repositories;
 
-namespace DomainDrivenDesignApiCodeGenerator.Services
+namespace DAG.Services
 {
     public class InterfacesServicesCodeGenerator : BaseClassesFromModelsAndDtosCodeGenerator
     {

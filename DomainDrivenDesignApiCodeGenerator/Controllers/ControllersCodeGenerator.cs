@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using DomainDrivenDesignApiCodeGenerator.Repositories;
+using DAG;
+using DAG.Repositories;
 using Humanizer;
 
-namespace DomainDrivenDesignApiCodeGenerator.Controllers
+namespace DAG.Controllers
 {
     public class ControllersCodeGenerator : BaseClassesFromModelsCodeGenerator
     {
@@ -15,8 +16,8 @@ namespace DomainDrivenDesignApiCodeGenerator.Controllers
             : base(modelsNamepace, generateClassesNamespace, classDirectoryPath, update,
             assemblyPath, usingNamespaces, Path.Combine("Controllers", "Templates", "ControllerTemplate.txt"), "{0}Controller")
         {
-                _commandsNamespace = commandsNamespace;
-            _classNamesArePlurar = update;
+            _commandsNamespace = commandsNamespace;
+            _classNamesArePlurar = true;
         }
 
         protected override string GetClassBody(string template, Type model)

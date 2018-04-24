@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace DomainDrivenDesignApiCodeGenerator.Helpers
+namespace DAG.Helpers
 {
     public static class AssemblyHelper
     {

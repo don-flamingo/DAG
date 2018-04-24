@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Humanizer;
 
-namespace DomainDrivenDesignApiCodeGenerator.Repositories
+namespace DAG.Repositories
 {
     public abstract class BaseClassesFromModelsCodeGenerator : BaseCodeGenerator
     {

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using DAG;
 
-namespace DomainDrivenDesignApiCodeGenerator.Dtos
+namespace DAG.Dtos
 {
     public class JwtDtoCodeGenerator : BaseClassCodeGenerator
     {

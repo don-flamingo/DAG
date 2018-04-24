@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using DAG;
 
-namespace DomainDrivenDesignApiCodeGenerator.Others
+namespace DAG.Others
 {
     public class StartupCodeGenerator : BaseClassCodeGenerator
     {

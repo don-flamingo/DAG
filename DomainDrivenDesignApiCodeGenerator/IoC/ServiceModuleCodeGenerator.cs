@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using DAG;
 
-namespace DomainDrivenDesignApiCodeGenerator.IoC
+namespace DAG.IoC
 {
     public class ServiceModuleCodeGenerator : BaseClassCodeGenerator
     {

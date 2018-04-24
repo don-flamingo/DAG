@@ -1,32 +1,34 @@
-﻿using DomainDrivenDesignApiCodeGenerator.Commands;
-using DomainDrivenDesignApiCodeGenerator.Controllers;
-using DomainDrivenDesignApiCodeGenerator.Dtos;
-using DomainDrivenDesignApiCodeGenerator.Interfaces;
-using DomainDrivenDesignApiCodeGenerator.IoC;
-using DomainDrivenDesignApiCodeGenerator.Others;
-using DomainDrivenDesignApiCodeGenerator.Repositories;
-using DomainDrivenDesignApiCodeGenerator.Services;
-using DomainDrivenDesignApiCodeGenerator.Settings;
+﻿using DAG.Commands;
+using DAG.Controllers;
+using DAG.Dtos;
+using DAG.Interfaces;
+using DAG.IoC;
+using DAG.Others;
+using DAG.Repositories;
+using DAG.Services;
+using DAG.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Emit;
+using DAG;
 
-namespace DomainDrivenDesignApiCodeGenerator
+namespace DAG
 {
     class Program
     {
         static void Main(string[] args)
         {
+            var projectPath = @"D:\Codes\My\Gymmer";
             var mainCodePath = @"D:\Codes\My\Gymmer\src";
-            var solutionPath = Path.Combine(mainCodePath, "Gymmer.sln");
-
+            var solutionPath = Path.Combine(projectPath, "Gymmer.sln");
             var projectName = "Gymmer";
             var update = false;
 
             var builder = new Builder(solutionPath);
 
-            var assembly = @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\bin\Debug\netcoreapp2.0\Gymmer.Server.Core.dll";
+            var assembly =
+                @"D:\Codes\My\Gymmer\src\Gymmer.Server\Gymmer.Server.Core\bin\Debug\netcoreapp2.0\Gymmer.Server.Core.dll";
             var commonAssembly = @"D:\Codes\My\Gymmer\src\Gymmer.Common\bin\Debug\netstandard2.0\Gymmer.Common.dll";
 
             var commonNamespace = $"{projectName}.Common";
@@ -52,13 +54,25 @@ namespace DomainDrivenDesignApiCodeGenerator
 
             var apiModelsPath = Path.Combine(apiPath, "Models");
 
-
             var coreCommonNamespace = $"{coreNamespace}.Common";
 
             var dtoNamespace = $"{commonNamespace}.Dtos";
             var modelsNamespace = $"{coreNamespace}.Models";
             var dtoPath = Path.Combine(commonCodePath, "Dtos");
-            var modelsPath = Path.Combine(corePath, "Models"); 
+            var modelsPath = Path.Combine(corePath, "Models");
+
+            var ignoredProps = new List<string>
+            {
+                "Modified",
+                "Status",
+                "Created"
+            };
+
+            var ignoredServiceNamespaces = new List<string>
+            {
+                dtoNamespace
+            };
+
 
             var coreCommonPath = Path.Combine(corePath, "Common");
 
@@ -99,64 +113,11 @@ namespace DomainDrivenDesignApiCodeGenerator
             var iServiceNamespace = $"{infrastrucutreNamespace}.Services.Domain.Interfaces";
             var iServicePath = Path.Combine(infrastracturePath, "Services", "Domain", "Interfaces");
             var iServiceNamespaces = $"using {dtoNamespace};{Environment.NewLine}" +
-                                    $"using {iPageQueryNamesapce};";
-
-            var ignoredServiceNamespaces = new List<string>
-            {
-                dtoNamespace
-            };
-
-            var ignoredProps = new List<string>
-            {
-                "Modified",
-                "Status",
-                "Created"
-            };
-
-            var dtoCodeGenerator = new DtosCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, false);
-            dtoCodeGenerator.Generate();
-
-           // builder.BuildSolution();
-
-            var interfaceGenerator =
-                new InterfacesCodeGenerator(modelsPath, modelsNamespace, assembly, update, 3, "IGymmerObject", postfix: "Provider");
-            interfaceGenerator.Generate();
-
-            var dtoInterfaceGenerator =
-                new InterfacesCodeGenerator(dtoPath, dtoNamespace, commonAssembly, update, 3, "IDto", "Dto", postfix: "Provider");
-            dtoInterfaceGenerator.Generate();
-
-            var sortFuncGenerator = new SortFuncCodeGenerator(coreCommonPath, coreCommonNamespace, update);
-            sortFuncGenerator.Generate();
-
-            var interfaceRepositoryCodeGenerator = new InterfacesRepositoriesCodeGenerator(modelsNamespace,
-                repositoryNamespace, repostioryPath, update, assembly, interfaceRepositoryNamespaces);
-            interfaceRepositoryCodeGenerator.Generate();
-
-            var efRepositoryCodeGenerator = new EFRepositoriesCodeGenerator(efContext, entityMarker, idProvider, modelsNamespace, entityCommonRepositoryNamespace, efRepositoryPath, update, assembly, efRepoNamespaces);
-            efRepositoryCodeGenerator.Generate();
-
-            var mapperCodeGenerator = new AutoMapperConfigCodeGenerator(mapperNamespaces,  modelsNamespace,mapperPath, mapperMamespace, update, assembly);
-            mapperCodeGenerator.Generate();
-
-            var iPageQueryCodeGenerator = new IPageQueryCodeGenerator(ipageQueryPath, iPageQueryNamesapce, update);
-            iPageQueryCodeGenerator.Generate();
-
-            var pageQuery = new PageQueryCodeGenerator(pageQueryPath, pageQueryNamesapce, pageQueryNamespaces, update);
-            pageQuery.Generate();
-
-            var serviceCodeGenerator = new InterfacesServicesCodeGenerator(commonAssembly, assembly, iServiceNamespaces,
-                modelsNamespace, iServiceNamespace, iServicePath, dtoNamespace, ignoredServiceNamespaces, update);
-            serviceCodeGenerator.AddIgnoredProps(ignoredProps);
-            serviceCodeGenerator.Generate();
+                                     $"using {iPageQueryNamesapce};";
 
             var libraryWrappers = Path.Combine(commonCodePath, "Wrappers");
             var commonWwrappersNamespace = $"{commonNamespace}.Wrappers";
-
             var pathNamesapces = $"using {dtoNamespace}.Interfaces;";
-
-            var patchResultCodeGenerator = new PatchResultCodeGenerator(libraryWrappers, commonWwrappersNamespace, update, pathNamesapces);
-            patchResultCodeGenerator.Generate();
 
             var infrastrucutreHelpersPath = Path.Combine(infrastracturePath, "Helpers");
             var infrastructureHelpersNamespace = $"{infrastrucutreNamespace}.Helpers";
@@ -164,37 +125,14 @@ namespace DomainDrivenDesignApiCodeGenerator
                                   $"using {iPageQueryNamesapce};{Environment.NewLine}" +
                                   $"using {commonExtensionsNamespace};";
 
-            var sortFuncHelperCodeGenerator = new SortFunctionHelperCodeGenerator(
-                infrastrucutreHelpersPath, infrastructureHelpersNamespace, usingNamespaces, update);
-            sortFuncHelperCodeGenerator.Generate();
-
-            var predicateHelperCodeGenerator =
-                new PredicateHelperCodeGenerator(infrastrucutreHelpersPath, infrastructureHelpersNamespace, update);
-            predicateHelperCodeGenerator.Generate();
-
-            var generalSettingsCodesGenerator =
-                new GeneralSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, update);
-            generalSettingsCodesGenerator.Generate();
-
-            var stringExtensionCodeGenerator =
-                new StringExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, update);
-            stringExtensionCodeGenerator.Generate();
-
             var extenionsNamespaces = $"using {dtoNamespace};{Environment.NewLine}" +
-                                          $"using {dtoNamespace}.Interfaces;{Environment.NewLine}" +
-                                          $"using {commonWwrappersNamespace};{Environment.NewLine}" +
-                                          $"using {infrastrucutreSettingsNamespace};";
-
-            var cacheExtensionsCodeGenerator = 
-                new CacheExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, extenionsNamespaces, update);
-            cacheExtensionsCodeGenerator.Generate();
+                                      $"using {dtoNamespace}.Interfaces;{Environment.NewLine}" +
+                                      $"using {commonWwrappersNamespace};{Environment.NewLine}" +
+                                      $"using {infrastrucutreSettingsNamespace};";
 
             var jwtDtoNamespaces = $"using {dtoNamespace}.Interfaces;";
-            var jwtDtoCodeGenerator = 
-                new JwtDtoCodeGenerator(dtoPath, dtoNamespace, jwtDtoNamespaces, update );
-            jwtDtoCodeGenerator.Generate();
 
-            var domainServicesPath = Path.Combine(infrastracturePath , "Services", "Domain");
+            var domainServicesPath = Path.Combine(infrastracturePath, "Services", "Domain");
             var domainServiceNamespace = $"{infrastrucutreNamespace}.Services.Domain";
             var domainServicesNamespaces = $"using {dtoNamespace};{Environment.NewLine}" +
                                            $"using {commonExtensionsNamespace};{Environment.NewLine}" +
@@ -206,22 +144,9 @@ namespace DomainDrivenDesignApiCodeGenerator
                                            $"using {iPageQueryNamesapce};{Environment.NewLine}" +
                                            $"using {infrastrucutreExtensionsNamespace};{Environment.NewLine}";
 
-            var domainServicesCodeGenerator = new DomainServicesCodeGenerator(commonAssembly, assembly,
-                domainServicesNamespaces, modelsNamespace, domainServiceNamespace,
-                domainServicesPath, dtoNamespace, ignoredServiceNamespaces, false);
-            domainServicesCodeGenerator.AddIgnoredProps(ignoredProps);
-            domainServicesCodeGenerator.Generate();
-
-            var objExtensionCodeGenerator = new ObjectExtensionsCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, update);
-            objExtensionCodeGenerator.Generate();
-
             var commonCommandsNamespace = $"{commonNamespace}.Commands";
             var commandsCodePath = Path.Combine(commonCodePath, "Commands");
             var commandsNamespaces = "";
-
-            var commandCodeGenerator = new CommandsCodeGenerator(commonAssembly, assembly, commandsNamespaces, modelsNamespace, commonCommandsNamespace, commandsCodePath, dtoNamespace, ignoredServiceNamespaces, update);
-            commandCodeGenerator.AddIgnoredProps(ignoredProps);
-            commandCodeGenerator.Generate();
 
             var infraCommandsNamespace = $"{infrastrucutreNamespace}.Commands";
             var infraCommandsPatch = Path.Combine(infrastracturePath, "Commands");
@@ -229,28 +154,15 @@ namespace DomainDrivenDesignApiCodeGenerator
             var infraCommandsHandlersNamespace = $"{infraCommandsNamespace}.Handlers";
             var commandsHandlerPatch = Path.Combine(infraCommandsPatch, "Handlers");
             var commandsHandlerNamespaces = $"using {domainServiceNamespace}.Interfaces;";
-
-            var commandsHandlersGenerator = new CommandsHandlersCodeGenerator(commonCommandsNamespace, infraCommandsHandlersNamespace, commandsHandlerPatch, update,
-                commonAssembly, commandsHandlerNamespaces, modelsNamespace, assembly);
-            commandsHandlersGenerator.Generate();
-
             var iCommandDispatcherNamespaces = $"using {commonCommandsNamespace};{Environment.NewLine}";
-
-            var iCommandDispatcher = new ICommandDispatcherCodeGenerator(infraCommandsPatch, infraCommandsNamespace, iCommandDispatcherNamespaces, update);
-            iCommandDispatcher.Generate();
-
             var commandDisatcherNamespaces = $"using {commonCommandsNamespace};{Environment.NewLine}" +
                                              $"using {infraCommandsHandlersNamespace};";
 
-            var cmmandDispatcher = new CommandDispatcherCodeGenerator(infraCommandsPatch, infraCommandsNamespace, commandDisatcherNamespaces, update);
-            cmmandDispatcher.Generate();
-
             var infraServicesNamespace = $"{infrastrucutreNamespace}.Services";
             var infraServicesPath = Path.Combine(infrastracturePath, "Services");
-
             var infraInterfacesServicesNamespace = $"{infraServicesNamespace}.Interfaces";
             var infraInterfacesServicesPath = Path.Combine(infraServicesPath, "Interfaces");
-            
+
 
             var iJwtNamespaces = $"using {dtoNamespace};";
             var jwtNamespaces =
@@ -322,33 +234,120 @@ namespace DomainDrivenDesignApiCodeGenerator
                                        $"using {infraServiceDataGeneratorNamespace};{Environment.NewLine}" +
                                        $"using {infrastrucutreSettingsNamespace};{Environment.NewLine}";
 
+            new DtosCodeGenerator(dtoNamespace, dtoPath, modelsNamespace, assembly, false).Generate();
+
+            builder.BuildSolution();
+
+            new InterfacesCodeGenerator(modelsPath, modelsNamespace, assembly, update, 3, "IGymmerObject",
+                postfix: "Provider").Generate();
+            new InterfacesCodeGenerator(dtoPath, dtoNamespace, commonAssembly, update, 3, "IDto", "Dto",
+                postfix: "Provider").Generate();
+            new SortFuncCodeGenerator(coreCommonPath, coreCommonNamespace, update).Generate();
+            new InterfacesRepositoriesCodeGenerator(modelsNamespace,
+                repositoryNamespace, repostioryPath, update, assembly, interfaceRepositoryNamespaces).Generate();
+            new EFRepositoriesCodeGenerator(efContext, entityMarker, idProvider, modelsNamespace,
+                entityCommonRepositoryNamespace, efRepositoryPath, update, assembly, efRepoNamespaces).Generate();
+            new AutoMapperConfigCodeGenerator(mapperNamespaces, modelsNamespace, mapperPath, mapperMamespace, update,
+                assembly).Generate();
+            new IPageQueryCodeGenerator(ipageQueryPath, iPageQueryNamesapce, update).Generate();
+            new PageQueryCodeGenerator(pageQueryPath, pageQueryNamesapce, pageQueryNamespaces, update).Generate();
+            new PatchResultCodeGenerator(libraryWrappers, commonWwrappersNamespace, update, pathNamesapces).Generate();
+            new ObjectExtensionsCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, update).Generate();
+
+            var serviceCodeGenerator = new InterfacesServicesCodeGenerator(commonAssembly, assembly, iServiceNamespaces,
+                modelsNamespace, iServiceNamespace, iServicePath, dtoNamespace, ignoredServiceNamespaces, update);
+            serviceCodeGenerator.AddIgnoredProps(ignoredProps);
+            serviceCodeGenerator.Generate();
+
+            builder.BuildSolution();
+
+            new SortFunctionHelperCodeGenerator(
+                infrastrucutreHelpersPath, infrastructureHelpersNamespace, usingNamespaces, update).Generate();
+
+            new PredicateHelperCodeGenerator(infrastrucutreHelpersPath, infrastructureHelpersNamespace, update)
+                .Generate();
+            new GeneralSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, update)
+                .Generate();
+            new StringExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, update).Generate();
+
+            new CacheExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace,
+                extenionsNamespaces, update).Generate();
+
+            new JwtDtoCodeGenerator(dtoPath, dtoNamespace, jwtDtoNamespaces, update).Generate();
+
+            var domainServicesCodeGenerator = new DomainServicesCodeGenerator(commonAssembly, assembly,
+                domainServicesNamespaces, modelsNamespace, domainServiceNamespace,
+                domainServicesPath, dtoNamespace, ignoredServiceNamespaces, false);
+            domainServicesCodeGenerator.AddIgnoredProps(ignoredProps);
+            domainServicesCodeGenerator.Generate();
+
+            builder.BuildSolution();
+
+            var iCommandDispatcher = new ICommandDispatcherCodeGenerator(infraCommandsPatch, infraCommandsNamespace,
+                iCommandDispatcherNamespaces, update);
+            iCommandDispatcher.Generate();
+
+            new CommandsHandlersCodeGenerator(commonCommandsNamespace,
+                infraCommandsHandlersNamespace, commandsHandlerPatch, update,
+                commonAssembly, commandsHandlerNamespaces, modelsNamespace, assembly).Generate();
+
+            new CommandDispatcherCodeGenerator(infraCommandsPatch, infraCommandsNamespace,
+                commandDisatcherNamespaces, update).Generate();
+
+            var commandCodeGenerator = new CommandsCodeGenerator(commonAssembly, assembly, commandsNamespaces,
+                modelsNamespace, commonCommandsNamespace, commandsCodePath, dtoNamespace, ignoredServiceNamespaces,
+                update);
+            commandCodeGenerator.AddIgnoredProps(ignoredProps);
+            commandCodeGenerator.Generate();
+
             new DateTimeExtensionCodeGenerator(commonExtensionsPath, commonExtensionsNamespace, update).Generate();
-            new IJwtHandlerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, iJwtNamespaces, update ).Generate();
-            new JwtHandlerCodeGenerator(infraServicesPath, infraServicesNamespace, jwtNamespaces, projectName, update).Generate();
-            new JwtSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, update).Generate();
-            new IEncrypterCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, update).Generate();
-            new EncrypterCodeGenerator(infraServicesPath, infraServicesNamespace, encrypterNamespaces, update).Generate();
-            new EmailSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, update).Generate();
+            new IJwtHandlerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, iJwtNamespaces,
+                update).Generate();
+            new JwtHandlerCodeGenerator(infraServicesPath, infraServicesNamespace, jwtNamespaces, projectName, update)
+                .Generate();
+            new JwtSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, update)
+                .Generate();
+            new IEncrypterCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, update)
+                .Generate();
+            new EncrypterCodeGenerator(infraServicesPath, infraServicesNamespace, encrypterNamespaces, update)
+                .Generate();
+            new EmailSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, update)
+                .Generate();
             new MailerCodeGenerator(infraServicesPath, infraServicesNamespace, mailerNamespaces, update).Generate();
-            new IMailerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, imailerNamespaces, update).Generate();
-            new DataInitalizerCodeGenerator(infraServiceDataGeneratorPath, infraServiceDataGeneratorNamespace, update).Generate();
-            new IDataInitalizerCodeGenerator(infraServiceDataGeneratorPath, infraServiceDataGeneratorNamespace, update).Generate();
+            new IMailerCodeGenerator(infraInterfacesServicesPath, infraInterfacesServicesNamespace, imailerNamespaces,
+                update).Generate();
+            new DataInitalizerCodeGenerator(infraServiceDataGeneratorPath, infraServiceDataGeneratorNamespace, update)
+                .Generate();
+            new IDataInitalizerCodeGenerator(infraServiceDataGeneratorPath, infraServiceDataGeneratorNamespace, update)
+                .Generate();
 
-            new CommandModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, commandsModuleNamespaces, update).Generate();
-            new ContainerModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, containerModuleNamespaces, update).Generate();
-            new RepositoryModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, repositoryModuleNamespaces, update).Generate();
-            new SettingModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, settingModuleNamespaces, update).Generate();
-            new ServiceModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, servicesModuleNamespaces, efContext, update).Generate();
-            new SqlSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, update).Generate();
-            new SettingsExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, update).Generate();
-            new CustomJsonSerializerCodeGenerator(commonSerializersPath, commonSerializersNamespace, projectName, update).Generate();
+            new CommandModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, commandsModuleNamespaces,
+                update).Generate();
+            new ContainerModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, containerModuleNamespaces,
+                update).Generate();
+            new RepositoryModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, repositoryModuleNamespaces,
+                update).Generate();
+            new SettingModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, settingModuleNamespaces,
+                update).Generate();
+            new ServiceModuleCodeGenerator(infraIoCModulesPath, infraIoCModulesNamespace, servicesModuleNamespaces,
+                efContext, update).Generate();
+            new SqlSettingsCodeGenerator(infrastrucutreSettingsPath, infrastrucutreSettingsNamespace, update)
+                .Generate();
+            new SettingsExtensionCodeGenerator(infrastractureExtensionsPath, infrastrucutreExtensionsNamespace, update)
+                .Generate();
+            new CustomJsonSerializerCodeGenerator(commonSerializersPath, commonSerializersNamespace, projectName,
+                update).Generate();
 
-            new ControllersCodeGenerator(modelsNamespace, apiControllersNamepace, apiControllersPath, update, assembly, apiControllersNamepaces, commonCommandsNamespace).Generate();
-            new StartupCodeGenerator(apiPath, apiNamespace, efContext, apiStartupNamespaces, projectName, update).Generate();
-            new CustomExceptionCodeGenerator(commonExceptionPath, commonExceptionNamespace, projectName, update).Generate();
-            new ExceptionHandlerMiddlewareCodeGenerator(apiExceptionMiddlewarePath, apiExceptionMiddlewareNamespace, projectName, apiExcpetionMiddlewareNamespaces, update).Generate();
-            
+            builder.BuildSolution();
 
+            new ControllersCodeGenerator(modelsNamespace, apiControllersNamepace, apiControllersPath, update, assembly,
+                apiControllersNamepaces, commonCommandsNamespace).Generate();
+            new StartupCodeGenerator(apiPath, apiNamespace, efContext, apiStartupNamespaces, projectName, update)
+                .Generate();
+            new CustomExceptionCodeGenerator(commonExceptionPath, commonExceptionNamespace, projectName, update)
+                .Generate();
+            new ExceptionHandlerMiddlewareCodeGenerator(apiExceptionMiddlewarePath, apiExceptionMiddlewareNamespace,
+                projectName, apiExcpetionMiddlewareNamespaces, update).Generate();
 
             Console.WriteLine("End.");
             Console.ReadLine();

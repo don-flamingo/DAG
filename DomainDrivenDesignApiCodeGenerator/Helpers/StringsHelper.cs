@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DomainDrivenDesignApiCodeGenerator.Extensions
+namespace DAG.Extensions
 {
     public static class StringsHelper
     {

@@ -1,4 +1,4 @@
-﻿namespace DomainDrivenDesignApiCodeGenerator
+﻿namespace DAG
 {
     public static class Consts
     {

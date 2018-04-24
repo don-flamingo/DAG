@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using DomainDrivenDesignApiCodeGenerator.Interfaces;
+using DAG.Interfaces;
 
-namespace DomainDrivenDesignApiCodeGenerator.Helpers
+namespace DAG.Helpers
 {
     public static class PropertyHelper
     {

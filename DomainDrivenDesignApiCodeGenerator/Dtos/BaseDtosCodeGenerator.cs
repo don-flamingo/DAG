@@ -3,7 +3,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DomainDrivenDesignApiCodeGenerator.Dtos
+namespace DAG.Dtos
 {
     public abstract class BaseDtosCodeGenerator : BaseCodeGenerator
     {

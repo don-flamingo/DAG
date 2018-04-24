@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DomainDrivenDesignApiCodeGenerator.Interfaces
+namespace DAG.Interfaces
 {
     public class Property
     {

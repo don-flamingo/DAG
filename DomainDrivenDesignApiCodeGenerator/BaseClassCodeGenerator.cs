@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
+using DAG;
 
-namespace DomainDrivenDesignApiCodeGenerator
+namespace DAG
 {
     public abstract class BaseClassCodeGenerator : BaseCodeGenerator
     {

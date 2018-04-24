@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using DomainDrivenDesignApiCodeGenerator.Extensions;
-using DomainDrivenDesignApiCodeGenerator.Helpers;
+using DAG;
+using DAG.Extensions;
+using DAG.Helpers;
 
-namespace DomainDrivenDesignApiCodeGenerator.Services
+namespace DAG.Services
 {
     public class DomainServicesCodeGenerator : BaseClassesFromModelsAndDtosCodeGenerator
     {

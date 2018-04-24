@@ -3,9 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using DomainDrivenDesignApiCodeGenerator.Helpers;
+using DAG.Helpers;
 
-namespace DomainDrivenDesignApiCodeGenerator.Dtos
+namespace DAG.Dtos
 {
     public class DtosCodeGenerator : BaseDtosCodeGenerator
     {
